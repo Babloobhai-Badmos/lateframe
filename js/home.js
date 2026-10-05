@@ -23,35 +23,9 @@
     return total > 0 ? clamp(-r.top / total) : 0;
   };
 
-  /* ---------- Loader ---------- */
-  (function loader() {
-    const el = $("[data-loader]");
-    if (!el) return;
-    const fill = $("[data-loader-fill]");
-    const count = $("[data-loader-count]");
-    document.body.classList.add("is-locked");
-    const start = performance.now();
-    const DURATION = reduce ? 200 : 1500;
-    let loaded = document.readyState === "complete";
-    addEventListener("load", () => (loaded = true));
-    (function tick(now) {
-      const t = clamp((now - start) / DURATION);
-      const v = loaded ? ease(t) : Math.min(ease(t), 0.92);
-      fill.setAttribute("y", String(43 - 43 * v));
-      fill.setAttribute("height", String(43 * v));
-      count.textContent = Math.round(v * 100) + "%";
-      if (v < 1) return requestAnimationFrame(tick);
-      setTimeout(() => {
-        el.classList.add("is-done");
-        document.body.classList.remove("is-locked");
-        setTimeout(() => el.remove(), 1200);
-      }, 150);
-    })(start);
-  })();
-
-  /* ---------- Hero portrait ---------- */
+  /* ---------- Hero camera (DSLR facing the viewer) ---------- */
   const portraitHost = $("[data-portrait]");
-  if (portraitHost && window.LF && LF.portrait) portraitHost.innerHTML = LF.portrait("hero");
+  if (portraitHost && window.LF && LF.camera) portraitHost.innerHTML = LF.camera("hero");
 
   /* ---------- Timeline ruler (generated) ---------- */
   const yards = $("[data-yards]");
@@ -88,6 +62,15 @@
   const heroCardEl = $("[data-hero-card]");
   if (heroCardEl) heroCardEl.innerHTML = cardFace(EDITS[0], 0);
   $$(".ph[data-src]").forEach((el) => (el.style.backgroundImage = `url("${el.dataset.src}")`));
+  // Let the intro wait for the reel posters / previews before it reveals the site
+  EDITS.forEach((e, i) => { LF.preload && LF.preload(e.image, "image"); LF.preload && LF.preload(e.video, "video"); });
+
+  // Lens glints follow the pointer (both cameras read --lx / --ly on <html>)
+  if (matchMedia("(hover:hover)").matches && !reduce) {
+    let px = 0, py = 0, cx = 0, cy = 0, raf = 0;
+    const loopLens = () => { cx += (px - cx) * 0.1; cy += (py - cy) * 0.1; document.documentElement.style.setProperty("--lx", cx.toFixed(3)); document.documentElement.style.setProperty("--ly", cy.toFixed(3)); raf = Math.abs(px - cx) + Math.abs(py - cy) > 0.002 ? requestAnimationFrame(loopLens) : 0; };
+    addEventListener("pointermove", (e) => { px = (e.clientX / innerWidth - 0.5) * 2; py = (e.clientY / innerHeight - 0.5) * 2; if (!raf) raf = requestAnimationFrame(loopLens); }, { passive: true });
+  }
 
   /* ---------- 3D tilt for reel cards ---------- */
   function tilt(host, card, opts = {}) {

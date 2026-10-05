@@ -70,7 +70,7 @@
     navHost.outerHTML = `
       <a class="skip-link" href="#main">Skip to content</a>
       <header class="nav" data-nav>
-        <a class="nav__logo" href="index.html" aria-label="${SITE.brand} — home">${markSvg()}</a>
+        <a class="nav__logo" href="index.html" aria-label="${SITE.brand} — home">${window.LF.logoSvg()}</a>
         <button class="nav__burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
           <svg viewBox="0 0 30 13" aria-hidden="true"><path class="bar-top" fill="currentColor" d="M8.541 0H29.896L27.01 4.04H5.655Z"/><path class="bar-bot" fill="currentColor" d="M2.886 8.888H24.241L21.355 12.928H0Z"/></svg>
         </button>
@@ -110,7 +110,7 @@
     const cta = SITE.footerCtas[page] || SITE.footerCtas.home;
     const marqSet = SITE.skills.map((p) => `<span>${p}</span>`).join("");
     footHost.outerHTML = `
-      <footer class="footer" data-footer>
+      <footer class="footer" data-footer data-tone="dark">
         <div class="footer__marq" aria-hidden="true"><div class="partner-marq__row">${marqSet}${marqSet}${marqSet}${marqSet}</div></div>
         <div class="footer__center">
           <div class="footer__invite" data-invite>
@@ -119,10 +119,10 @@
             <a class="btn btn--yellow" href="${cta.cta.href}"><span>${cta.cta.label}</span></a>
           </div>
         </div>
-        <div class="footer__cutout" aria-hidden="true">${window.LF.portrait ? window.LF.portrait("foot") : ""}</div>
+        <div class="footer__cutout" aria-hidden="true">${window.LF.camera ? window.LF.camera("foot") : ""}</div>
         <div class="footer__panel">
           <div class="footer__panel-in">
-            <a class="footer__logo" href="index.html" aria-label="Home">${markSvg()}</a>
+            <a class="footer__logo" href="index.html" aria-label="Home">${window.LF.logoSvg()}</a>
             <nav class="footer__nav" aria-label="Footer">${SITE.nav.map((l) => `<a href="${l.href}"><span>${l.label}</span><span class="fill" aria-hidden="true">${l.label}</span></a>`).join("")}</nav>
             <div>
               <ul class="footer__socials">${SITE.socials.map((s) => `<li><a href="${s.url}" target="_blank" rel="noreferrer" aria-label="${s.label}">${ICONS[s.id]}</a></li>`).join("")}</ul>

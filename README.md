@@ -17,9 +17,9 @@ python3 -m http.server 8000   # then open http://localhost:8000
 
 | Section | What it does |
 | --- | --- |
-| Loader | The lateframe mark (an **L** plus a trailing frame) fills up with a % counter |
+| Intro | The "late frame" logo sequence (below) — doubles as a real preloader |
 | Nav + menu | Fixed logo/hamburger that recolours per section; full-screen menu with a wipe-fill hover |
-| Hero | Pinned scene: giant scrolling name, portrait, a tilting "latest reel" card; wipes away diagonally |
+| Hero | Pinned scene: giant scrolling name, a **DSLR with its lens facing you** (glints follow the cursor), a tilting "latest reel" card; wipes away diagonally |
 | Selected Edits | Dark **timeline** with a timecode ruler and a red playhead; a horizontal reel of floating 9:16 cards. Click a card → modal with the video (or poster) and a "Watch on Instagram" button |
 | Statement | REC chip + "Every cut has a reason." with frame-grab polaroids that fan out |
 | Straight from the feed | Accordion reel tiles (snap carousel on phones) linking to the Instagram page |
@@ -28,6 +28,24 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | Footer | Glass nav panel, headline reveal, CTA, skills marquee, sound toggle |
 
 Other pages: **Edits**, **Instagram**, **Capabilities**, **About**, **Contact**, Privacy, Terms.
+
+## The intro (logo animation + preloader)
+
+`js/intro.js` + `css/intro.css`, using the real **lf.** logo (traced from `assets/brand/logo-lf.jpg` into
+`js/brand.js` as three vector paths: **l**, **f** and the period).
+
+1. Black → grain and a warm amber / orange / crimson light bloom, with a blinking **REC** timecode.
+2. The **l** and **f** rise in. A dashed outline waits where the period goes.
+3. The timecode counts **00:00:00 → 00:00:23** as the site *actually* loads — fonts, images, and the reel
+   posters / previews are all tracked.
+4. When everything is ready (never before 3.3 s), frame **24** lands: the period slams in with a flash,
+   shockwave rings and screen shake. The hero then reveals as the screen splits open like a shutter.
+
+- Slow connection? It keeps waiting (12 s hard cap) and a **Skip intro** button appears after ~1.4 s.
+- Plays on first open and on reload; navigating between pages inside the site skips it.
+  Force it with `?intro`, disable it with `?nointro`. `prefers-reduced-motion` gets a calm fade version.
+- Add your own assets to the wait: `LF.preload("assets/video/clip.mp4", "video")` or `"image"`.
+  Reel `image` / `video` entries in `EDITS` are registered automatically.
 
 ## Make it yours
 
@@ -44,11 +62,12 @@ Other pages: **Edits**, **Instagram**, **Capabilities**, **About**, **Contact**,
    ```
 3. **Photos elsewhere** — any `.ph` placeholder takes a real image without CSS changes:
    `<div class="ph" data-src="assets/img/photo.webp"></div>`
-4. **Portrait** — `js/art.js` draws a placeholder silhouette (hero + footer). Replace its output
-   with an `<img>` of a transparent PNG/WebP cut-out.
+4. **Hero camera** — `js/art.js` draws the DSLR in SVG (hero + footer). Replace `LF.camera()`'s output with an
+   `<img>` of a transparent PNG/WebP photo of your own camera if you'd like.
 5. **Capabilities** — the six services are in `BRANDS` in `js/home.js` and in `capabilities.html`.
 6. **Copy** — About and legal pages are placeholder text. Colours/type: tokens in `:root` of
-   `css/styles.css`. Fonts (Big Shoulders Display, Inter, JetBrains Mono — SIL OFL) are self-hosted.
+   `css/styles.css`. The logo artwork is `assets/brand/logo-lf.jpg` (also the social-share image —
+   set an absolute URL in the `og:image` tag once deployed). Fonts (Big Shoulders Display, Inter, JetBrains Mono — SIL OFL) are self-hosted.
 7. **Contact form** — opens the visitor's email client; point `action` at a form service when you deploy.
 
 Scroll choreography is one `requestAnimationFrame` loop in `js/home.js` that reads each pinned
