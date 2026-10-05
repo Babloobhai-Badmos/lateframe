@@ -1,11 +1,11 @@
-# Lateframe
+# lateframe
 
-An editorial, scroll-driven athlete site template — no build step, no dependencies.
-Plain HTML + CSS + vanilla JS, so it deploys anywhere static files do.
+Portfolio site for **Devansh Sharma**, video editor — his edits, Instagram reels and
+editing capabilities. Plain HTML + CSS + vanilla JS: no build step, no dependencies,
+deploys anywhere static files do.
 
-> The content is **placeholder** (a fictional player, fictional brands, generated
-> artwork). It reproduces the *structure and interactions* of a premium
-> athlete-brand site, not anyone's photos, logos or copy. Swap in your own.
+> Everything visual is **placeholder** (generated gradients, a silhouette portrait, sample
+> reel titles). Swap in the real reels, stills and portrait — see below.
 
 ## Run it
 
@@ -17,33 +17,39 @@ python3 -m http.server 8000   # then open http://localhost:8000
 
 | Section | What it does |
 | --- | --- |
-| Loader | Logo fills from the bottom with a % counter, then slides away |
-| Nav + menu | Fixed logo/hamburger that recolours per section; full-screen menu with staggered links and a wipe-fill hover |
-| Hero | Pinned scroll scene: giant marquee name, cut-out portrait, 3D-tilting foil trading card; wipes away diagonally |
-| Signature Moments | Dark "field" with scrolling yard lines and a horizontal reel of floating cards; click opens a flip-in card modal |
-| Quote | Polaroids rise, fan out, then the quote lines light up |
-| Foundation | Accordion photo tiles (snap carousel on phones) |
-| Partnerships | Diagonal wipe into a pinned showcase that steps through brands (dots, panel, marquee) |
-| Make a play | Auto-drifting, draggable rail of tilted photos |
-| Footer | Glass nav panel, headline reveal, CTA, partner marquee, sound toggle |
+| Loader | The lateframe mark (an **L** plus a trailing frame) fills up with a % counter |
+| Nav + menu | Fixed logo/hamburger that recolours per section; full-screen menu with a wipe-fill hover |
+| Hero | Pinned scene: giant scrolling name, portrait, a tilting "latest reel" card; wipes away diagonally |
+| Selected Edits | Dark **timeline** with a timecode ruler and a red playhead; a horizontal reel of floating 9:16 cards. Click a card → modal with the video (or poster) and a "Watch on Instagram" button |
+| Statement | REC chip + "Every cut has a reason." with frame-grab polaroids that fan out |
+| Straight from the feed | Accordion reel tiles (snap carousel on phones) linking to the Instagram page |
+| Capabilities | Diagonal wipe into a pinned showcase that steps through each service (dots, panel, marquee) |
+| Every frame is a decision | Auto-drifting, draggable rail of stills |
+| Footer | Glass nav panel, headline reveal, CTA, skills marquee, sound toggle |
 
-Inner pages (On-Field, Off-Field, Foundation, Partnerships, Journal, Inquiries, Privacy,
-Terms) are simple placeholders on the same shell.
+Other pages: **Edits**, **Instagram**, **Capabilities**, **About**, **Contact**, Privacy, Terms.
 
 ## Make it yours
 
-1. **Site-wide copy** — edit the `SITE` object at the top of `js/chrome.js` (name, nav, socials,
-   partner names, footer headline per page). Nav, menu and footer update everywhere.
-2. **Photos** — every `.ph` placeholder takes a real image without CSS changes:
+1. **Instagram, email, socials** — edit the `SITE` object at the top of `js/chrome.js`
+   (set the real Instagram profile URL and contact email). Nav, menu and footer update everywhere.
+2. **Reels** — the reel cards, hero card and modal all come from the `EDITS` array at the top of
+   `js/home.js`:
+   ```js
+   { title: "Neon Nights", tag: "Cinematic edit", hue: 15,
+     image: "assets/img/neon-nights.webp",   // poster still (optional)
+     video: "assets/video/neon-nights.mp4",   // preview that plays in the modal (optional)
+     link:  "https://instagram.com/reel/XXXX" // the original reel (optional)
+     dy: -10, dur: 6.4, delay: 0 }            // float offset / animation timing
+   ```
+3. **Photos elsewhere** — any `.ph` placeholder takes a real image without CSS changes:
    `<div class="ph" data-src="assets/img/photo.webp"></div>`
-3. **Portrait / cut-out** — `js/art.js` returns a placeholder SVG. Replace it with an `<img>` of a
-   transparent PNG/WebP (hero portrait and footer cut-out).
-4. **Cards, brands, rail** — cards are in `index.html`; brands (`BRANDS`) and rail photos (`PLAY`)
-   are arrays near the top of `js/home.js`.
-5. **Colours / type** — tokens live in `:root` at the top of `css/styles.css`.
-   Fonts (Big Shoulders Display, Inter, JetBrains Mono — SIL OFL) are self-hosted in `assets/fonts`.
-6. **Inquiries form** — opens the visitor's email client; point `action` at a form service
-   when you deploy.
+4. **Portrait** — `js/art.js` draws a placeholder silhouette (hero + footer). Replace its output
+   with an `<img>` of a transparent PNG/WebP cut-out.
+5. **Capabilities** — the six services are in `BRANDS` in `js/home.js` and in `capabilities.html`.
+6. **Copy** — About and legal pages are placeholder text. Colours/type: tokens in `:root` of
+   `css/styles.css`. Fonts (Big Shoulders Display, Inter, JetBrains Mono — SIL OFL) are self-hosted.
+7. **Contact form** — opens the visitor's email client; point `action` at a form service when you deploy.
 
 Scroll choreography is one `requestAnimationFrame` loop in `js/home.js` that reads each pinned
 section's progress and writes CSS variables. `prefers-reduced-motion` is respected.

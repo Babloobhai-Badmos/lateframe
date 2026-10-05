@@ -3,30 +3,31 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Inquiries — Jordan Vale</title>
-  <meta name="description" content="Business and media inquiries.">
-  <meta name="theme-color" content="#0B0A0F">
+  <title>Contact — lateframe</title>
+  <meta name="description" content="Start a project with Devansh Sharma.">
+  <meta name="theme-color" content="#0A0A0C">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body data-page="inquiries" data-footer="inquiries">
+<body data-page="contact" data-footer="contact">
 <div data-chrome="nav"></div>
 <main id="main" tabindex="-1" class="page" data-tone="light">
   <header class="page__hero">
-    <p class="page__eyebrow">Contact</p>
-    <h1 class="display">Inquiries</h1>
-    <p class="page__lede">Partnerships, appearances, press and speaking. Tell us a little about what you have in mind.</p>
+    <p class="page__eyebrow">Say hello</p>
+    <h1 class="display">Contact</h1>
+    <p class="page__lede">Have footage that needs a cut? Tell me about the project — what it is, where it's going, and when you need it.</p>
   </header>
   <div class="page__body">
     <form class="form" action="mailto:hello@example.com" method="post" enctype="text/plain">
       <label>Name<input name="name" autocomplete="name" required></label>
       <label>Email<input name="email" type="email" autocomplete="email" required></label>
-      <label>Inquiry type<select name="type"><option>Partnership</option><option>Appearance</option><option>Press</option><option>Other</option></select></label>
-      <label>Message<textarea name="message" required></textarea></label>
+      <label>What do you need?<select name="type"><option>Reel / short-form edit</option><option>Brand or ad edit</option><option>Color grade</option><option>Ongoing monthly edits</option><option>Something else</option></select></label>
+      <label>Link to footage or references<input name="link" type="url" placeholder="https://"></label>
+      <label>Tell me about it<textarea name="message" required></textarea></label>
       <button class="btn" type="submit"><span>Send</span></button>
-      <p class="form__note">This form opens your email client. Swap the <code>action</code> for your own form endpoint when you deploy.</p>
+      <p class="form__note">This form opens your email client. Swap the <code>action</code> for your own form endpoint (or just use your email) when you deploy.</p>
     </form>
   </div>
 </main>

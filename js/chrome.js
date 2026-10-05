@@ -6,40 +6,40 @@
   "use strict";
 
   const SITE = {
-    name: "Jordan Vale",
-    legalName: "Jordan Vale",
-    number: "18",
+    brand: "lateframe",
+    name: "Devansh Sharma",
+    legalName: "Devansh Sharma",
+    role: "Video editor",
+    email: "hello@example.com", // ← your contact email
     nav: [
       { label: "Home", href: "index.html" },
-      { label: "On-Field", href: "on-field.html" },
-      { label: "Off-Field", href: "off-field.html" },
-      { label: "Foundation", href: "foundation.html" },
-      { label: "Partnerships", href: "partnerships.html" },
-      { label: "Journal", href: "journal.html" },
-      { label: "Inquiries", href: "inquiries.html" },
+      { label: "Edits", href: "edits.html" },
+      { label: "Instagram", href: "instagram.html" },
+      { label: "Capabilities", href: "capabilities.html" },
+      { label: "About", href: "about.html" },
+      { label: "Contact", href: "contact.html" },
     ],
     socials: [
-      { id: "instagram", label: "Instagram", url: "https://instagram.com/" },
-      { id: "tiktok", label: "TikTok", url: "https://tiktok.com/" },
+      { id: "instagram", label: "Instagram", url: "https://instagram.com/" }, // ← set to your profile URL
+      { id: "youtube", label: "YouTube", url: "https://youtube.com/" },
       { id: "x", label: "X", url: "https://x.com/" },
-      { id: "twitch", label: "Twitch", url: "https://twitch.tv/" },
     ],
     legal: [
       { label: "Privacy", href: "privacy.html" },
       { label: "Terms", href: "terms.html" },
     ],
-    credit: { label: "Built with Lateframe", href: "#" },
-    projectBy: { label: "An Example Studio Project", href: "#" },
-    partners: ["Northwind", "Voltade", "Pulse Cola", "Golden Oats", "Aperture", "Studio Sound", "Harbor Bank", "Slice & Co.", "Pixel League", "Restwell"],
+    credit: { label: "Built with Lateframe", href: "index.html" },
+    projectBy: { label: "lateframe — edits by Devansh Sharma", href: "index.html" },
+    /* Words that drift through the footer / capabilities marquee */
+    skills: ["Reels", "Color grade", "Motion graphics", "Sound design", "Beat sync", "Pacing", "Transitions", "Captions", "VFX cleanup", "Storytelling"],
     /* Footer call-to-action per page (data-footer on <body>) */
     footerCtas: {
-      home: { headline: ["Records were made", "to be broken"], cta: { label: "On-Field", href: "on-field.html" } },
-      "on-field": { headline: ["Leaving a", "lasting impact"], cta: { label: "Foundation", href: "foundation.html" } },
-      "off-field": { headline: ["The game is just", "the beginning"], cta: { label: "Off-Field", href: "off-field.html" } },
-      foundation: { headline: ["Bigger than", "the game"], cta: { label: "Off-Field", href: "off-field.html" } },
-      partnerships: { headline: ["Let's build", "something together"], cta: { label: "Inquiries", href: "inquiries.html" } },
-      journal: { headline: ["Records were made", "to be broken"], cta: { label: "On-Field", href: "on-field.html" } },
-      inquiries: { headline: ["Records were made", "to be broken"], cta: { label: "On-Field", href: "on-field.html" } },
+      home: { headline: ["Let's cut", "something together"], cta: { label: "Get in touch", href: "contact.html" } },
+      edits: { headline: ["Like what", "you see?"], cta: { label: "Get in touch", href: "contact.html" } },
+      instagram: { headline: ["See the full", "cut on the feed"], cta: { label: "Edits", href: "edits.html" } },
+      capabilities: { headline: ["Have a project", "in mind?"], cta: { label: "Get in touch", href: "contact.html" } },
+      about: { headline: ["Let's cut", "something together"], cta: { label: "Get in touch", href: "contact.html" } },
+      contact: { headline: ["Every frame", "is a decision"], cta: { label: "See the edits", href: "edits.html" } },
     },
   };
   window.SITE = SITE;
@@ -48,14 +48,14 @@
     instagram: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg>',
     tiktok: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M16.5 3c.31 2.12 1.5 3.52 3.5 3.81v2.74c-1.2.1-2.41-.2-3.5-.83v5.9c0 3.4-2.62 5.89-5.9 5.4-2.6-.39-4.39-2.62-4.3-5.22.1-2.71 2.42-4.8 5.13-4.6.27.02.53.06.78.13v2.94a2.35 2.35 0 0 0-.93-.22 2.16 2.16 0 1 0 2.32 2.15V3h2.9Z"/></svg>',
     x: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.656l-5.214-6.817-5.966 6.817H1.683l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg>',
+    youtube: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.76-1.77C18.27 5 12 5 12 5s-6.27 0-7.84.43A2.5 2.5 0 0 0 2.4 7.2C2 8.78 2 12 2 12s0 3.22.4 4.8a2.5 2.5 0 0 0 1.76 1.77C5.73 19 12 19 12 19s6.27 0 7.84-.43a2.5 2.5 0 0 0 1.76-1.77C22 15.22 22 12 22 12s0-3.22-.4-4.8ZM10 15V9l5.2 3L10 15Z"/></svg>',
     twitch: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M4.3 3 3 6.2v12.3h4.2V21h2.4l2.3-2.5h3.5L21 13.9V3H4.3Zm14.8 10.3-2.4 2.4h-3.5l-2.3 2.3v-2.3H7.6V4.6h11.5v8.7ZM15.5 7.3h-1.6v4.8h1.6V7.3Zm-4.3 0H9.6v4.8h1.6V7.3Z"/></svg>',
   };
 
   /* Original placeholder mark (swap for your own SVG) */
-  const MARK_PATHS =
-    '<path d="M27.93 35.22 28.92 42.82 18.49 35.41 7.9 42.93 8.89 35.34 18.49 28.52Z"/><path d="M15.49 23.34 0 34.28 1.75 20.68 7.35 16.72 6.74 23.12 11 20.11 13.13 3.8 18.5 0Z"/><path d="M23.87 3.8 26 20.11 30.26 23.12 29.65 16.72 35.25 20.68 37 34.28 21.51 23.34 18.5 0Z"/>';
+  const MARK_PATHS = '<path d="M3 3h9v28h22v9H3z"/><path d="M21 3h13v13H21z"/>';
   const markSvg = (cls = "", extra = "") =>
-    `<svg viewBox="0 0 37 43" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${SITE.name}" class="${cls}" ${extra}><g fill="currentColor">${MARK_PATHS}</g></svg>`;
+    `<svg viewBox="0 0 37 43" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${SITE.brand}" class="${cls}" ${extra}><g fill="currentColor">${MARK_PATHS}</g></svg>`;
   window.LF = Object.assign(window.LF || {}, { markSvg, MARK_PATHS, ICONS });
 
   const page = document.body.dataset.footer || "home";
@@ -70,7 +70,7 @@
     navHost.outerHTML = `
       <a class="skip-link" href="#main">Skip to content</a>
       <header class="nav" data-nav>
-        <a class="nav__logo" href="index.html" aria-label="${SITE.name} — home">${markSvg()}</a>
+        <a class="nav__logo" href="index.html" aria-label="${SITE.brand} — home">${markSvg()}</a>
         <button class="nav__burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
           <svg viewBox="0 0 30 13" aria-hidden="true"><path class="bar-top" fill="currentColor" d="M8.541 0H29.896L27.01 4.04H5.655Z"/><path class="bar-bot" fill="currentColor" d="M2.886 8.888H24.241L21.355 12.928H0Z"/></svg>
         </button>
@@ -108,7 +108,7 @@
   const footHost = document.querySelector('[data-chrome="footer"]');
   if (footHost) {
     const cta = SITE.footerCtas[page] || SITE.footerCtas.home;
-    const marqSet = SITE.partners.map((p) => `<span>${p}</span>`).join("");
+    const marqSet = SITE.skills.map((p) => `<span>${p}</span>`).join("");
     footHost.outerHTML = `
       <footer class="footer" data-footer>
         <div class="footer__marq" aria-hidden="true"><div class="partner-marq__row">${marqSet}${marqSet}${marqSet}${marqSet}</div></div>

@@ -53,20 +53,43 @@
   const portraitHost = $("[data-portrait]");
   if (portraitHost && window.LF && LF.portrait) portraitHost.innerHTML = LF.portrait("hero");
 
-  /* ---------- Yard lines (generated) ---------- */
+  /* ---------- Timeline ruler (generated) ---------- */
   const yards = $("[data-yards]");
   if (yards) {
     const hash = () => `<div class="yards__hash"><i></i><i></i><i></i></div>`;
     const five = (n) => `<div class="yards__five"><b>${n}</b></div>`;
     const line = `<div class="yards__line"></div>`;
-    const nums = [10, 20, 30, 40, 50, 40, 30, 20, 10];
+    const nums = ["00:05", "00:10", "00:15", "00:20", "00:25", "00:30", "00:35", "00:40", "00:45"];
     let html = "";
     nums.forEach((n, i) => { html += hash() + hash() + hash() + hash() + five(n) + (i < nums.length - 1 ? hash() + hash() + hash() + hash() + line : ""); });
     yards.innerHTML = html;
     yards.style.width = "calc(76vw * var(--n, 4))";
   }
 
-  /* ---------- 3D tilt for trading cards ---------- */
+/* ---------- Edits (edit this array — one entry per reel) ----------
+     image : poster still (e.g. "assets/img/neon-nights.webp")  → optional
+     video : short mp4 preview that plays in the modal          → optional
+     link  : the reel's Instagram URL (falls back to your profile) */
+  const EDITS = [
+    { title: "Neon Nights", tag: "Cinematic edit", hue: 15, dy: -10, dur: 6.4, delay: 0 },
+    { title: "Beat Drop", tag: "Beat-synced cuts", hue: 200, dy: 12, dur: 7.5, delay: -1.3 },
+    { title: "Whip & Warp", tag: "Transitions", hue: 330, dy: -15, dur: 8.6, delay: -2.5 },
+    { title: "Golden Hour", tag: "Color grade", hue: 40, dy: 8, dur: 6.4, delay: -3.8 },
+    { title: "Hyperdrive", tag: "Speed ramps", hue: 265, dy: -5, dur: 7.5, delay: -5 },
+  ];
+  const igUrl = ((window.SITE && SITE.socials.find((x) => x.id === "instagram")) || {}).url || "https://instagram.com/";
+  const cardFace = (e, i) =>
+    `<div class="tcard"><div class="tcard__face"><div class="ph" style="--h:${e.hue}" data-label="${e.title}"${e.image ? ` data-src="${e.image}"` : ""}></div><span class="tcard__num">${String(i + 1).padStart(2, "0")}</span><span class="tcard__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><div class="tcard__sheen"></div><div class="tcard__holo"></div></div></div>`;
+  const reelHost = $("[data-reel]");
+  if (reelHost) {
+    reelHost.innerHTML = EDITS.map((e, i) =>
+      `<div class="reel__item" style="--dy:${e.dy}"><div class="reel__shift"><div class="reel__card" role="button" tabindex="0" aria-label="Play ${e.title}" data-cursor="Play" data-card data-i="${i}" style="--dur:${e.dur}s;--delay:${e.delay}s">${cardFace(e, i)}</div><div class="reel__caption"><p class="label">${e.title}</p><p class="label-sm">${e.tag}</p></div></div></div>`).join("");
+  }
+  const heroCardEl = $("[data-hero-card]");
+  if (heroCardEl) heroCardEl.innerHTML = cardFace(EDITS[0], 0);
+  $$(".ph[data-src]").forEach((el) => (el.style.backgroundImage = `url("${el.dataset.src}")`));
+
+  /* ---------- 3D tilt for reel cards ---------- */
   function tilt(host, card, opts = {}) {
     const max = opts.max || 14;
     const set = (k, v) => card.style.setProperty(k, v);
@@ -91,17 +114,23 @@
   if (heroCardHost) tilt(heroCardHost, $(".tcard", heroCardHost));
   $$("[data-card]").forEach((c) => tilt(c, $(".tcard", c)));
 
-  /* ---------- Card modal ---------- */
+  /* ---------- Reel modal ---------- */
   const modal = $("[data-modal]");
+  const mVideo = $("[data-modal-video]");
   let lastFocus = null;
-  function openModal(src) {
+  function openModal(i) {
+    const e = EDITS[i] || EDITS[0];
     lastFocus = document.activeElement;
     const ph = $("[data-modal-ph]");
-    ph.style.setProperty("--h", src.dataset.h || 265);
-    ph.dataset.label = src.dataset.title;
-    $("[data-modal-num]").textContent = src.dataset.n || "";
-    $("[data-modal-title]").textContent = src.dataset.title;
-    $("[data-modal-stat]").textContent = src.dataset.stat;
+    ph.style.setProperty("--h", e.hue);
+    ph.dataset.label = e.title;
+    ph.style.backgroundImage = e.image ? `url("${e.image}")` : "";
+    $("[data-modal-num]").textContent = String(i + 1).padStart(2, "0");
+    $("[data-modal-title]").textContent = e.title;
+    $("[data-modal-stat]").textContent = e.tag;
+    $("[data-modal-link]").href = e.link || igUrl;
+    if (e.video) { mVideo.src = e.video; mVideo.hidden = false; mVideo.play().catch(() => {}); }
+    else { mVideo.hidden = true; mVideo.removeAttribute("src"); }
     modal.classList.add("is-open");
     modal.removeAttribute("inert");
     modal.setAttribute("aria-hidden", "false");
@@ -109,6 +138,7 @@
     $("[data-modal-close]").focus();
   }
   function closeModal() {
+    mVideo.pause();
     modal.classList.remove("is-open");
     modal.setAttribute("inert", "");
     modal.setAttribute("aria-hidden", "true");
@@ -116,16 +146,16 @@
     lastFocus && lastFocus.focus && lastFocus.focus();
   }
   $$("[data-card]").forEach((c) => {
-    c.addEventListener("click", () => openModal(c));
-    c.addEventListener("keydown", (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), openModal(c)));
+    c.addEventListener("click", () => openModal(+c.dataset.i));
+    c.addEventListener("keydown", (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), openModal(+c.dataset.i)));
   });
   const heroCard = $("[data-hero-card]");
-  heroCard && heroCard.addEventListener("click", () => openModal($("[data-card]")));
+  heroCard && heroCard.addEventListener("click", () => openModal(0));
   modal.addEventListener("click", (e) => (e.target === modal || e.target.closest("[data-modal-close]")) && closeModal());
   addEventListener("keydown", (e) => e.key === "Escape" && modal.classList.contains("is-open") && closeModal());
 
   /* ---------- Partner marquee ---------- */
-  const partners = (window.SITE && SITE.partners) || [];
+  const partners = (window.SITE && SITE.skills) || [];
   const marq = $("[data-marq]");
   if (marq) {
     const set = partners.map((p) => `<span>${p}</span>`).join("");
@@ -172,12 +202,12 @@
 
   /* ---------- Partnerships ---------- */
   const BRANDS = [
-    { name: "Northwind", copy: "The signature partnership. Jordan is the face of Northwind football — custom game-day cleats, design sessions at HQ, and a say in where the footwear goes next." },
-    { name: "Voltade", copy: "Long-running hydration partner, with campaigns, sideline visibility, and a recurring slot in their game-day rotation." },
-    { name: "Pulse Cola", copy: "National campaigns — suiting up in the gladiator arena and crashing tailgates with the league's biggest names." },
-    { name: "Golden Oats", copy: "Cereal-box royalty — limited-edition boxes, Jordan's own signature mix, and aisle-side spots with a few famous friends." },
-    { name: "Aperture", copy: "Lifestyle and performance eyewear collaboration, from training visors to off-field shades." },
-    { name: "Studio Sound", copy: "Game-day arrivals run through Studio Sound — headphone campaigns and the custom pairs worn through the tunnel." },
+    { name: "Reels & Shorts", copy: "Vertical-first edits built for the scroll: a hook in the first second, a rhythm that holds, and an ending that loops." },
+    { name: "Color Grade", copy: "Looks that feel intentional — matching shots, fixing skin tones, and giving a clip a mood that fits the story." },
+    { name: "Motion Graphics", copy: "Kinetic type, animated overlays and clean transitions that support the cut instead of competing with it." },
+    { name: "Sound Design", copy: "Beat-synced cuts, layered effects and a proper mix, so every hit lands exactly on the beat." },
+    { name: "Pacing & Story", copy: "Trimming, reordering and rhythm — finding the version of the footage that actually works." },
+    { name: "Brand & Ads", copy: "Edits for creators and brands: on-message, on-format, and delivered in the sizes each platform needs." },
   ];
   const tail = $("[data-tail]");
   const pstage = $("[data-pstage]");
@@ -223,11 +253,11 @@
 
   /* ---------- Make a play rail ---------- */
   const PLAY = [
-    ["All-hands at HQ", "partnerships.html", 44], ["White on white, road game", "on-field.html", 54], ["City lights, all white", "off-field.html", 48],
-    ["Sparkly suit", "off-field.html", 56], ["Camp days", "foundation.html", 46], ["Suited for the honors", "on-field.html", 48],
-    ["Big in Shanghai", "off-field.html", 42], ["On set", "partnerships.html", 50], ["Park, off duty", "off-field.html", 44],
-    ["Touchdown", "on-field.html", 54], ["Tailoring", "off-field.html", 48], ["Streets", "off-field.html", 56],
-    ["Rain check", "off-field.html", 46], ["The big stage", "off-field.html", 48], ["Friday nights", "on-field.html", 42], ["Tokyo drip", "off-field.html", 50],
+    ["Cold open", "edits.html", 44], ["Whip pan", "edits.html", 54], ["Match cut", "edits.html", 48],
+    ["Speed ramp", "edits.html", 56], ["Beat drop", "instagram.html", 46], ["Color pass", "capabilities.html", 48],
+    ["Kinetic type", "capabilities.html", 42], ["Hard cut", "edits.html", 50], ["Slow burn", "instagram.html", 44],
+    ["Jump cut", "edits.html", 54], ["Light leak", "capabilities.html", 48], ["Freeze frame", "edits.html", 56],
+    ["Glitch", "capabilities.html", 46], ["Fade to black", "instagram.html", 48], ["Split screen", "edits.html", 42], ["Final export", "contact.html", 50],
   ];
   const YS = [6, -4, 7, 1, 8, 3, -5, 6], RS = [-3, 2, -2, 3, -3, 2, -2, 3];
   const playRow = $("[data-play-row]");
