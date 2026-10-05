@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inquiries — Jordan Vale</title>
+  <meta name="description" content="Business and media inquiries.">
+  <meta name="theme-color" content="#0B0A0F">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="inquiries" data-footer="inquiries">
+<div data-chrome="nav"></div>
+<main id="main" tabindex="-1" class="page" data-tone="light">
+  <header class="page__hero">
+    <p class="page__eyebrow">Contact</p>
+    <h1 class="display">Inquiries</h1>
+    <p class="page__lede">Partnerships, appearances, press and speaking. Tell us a little about what you have in mind.</p>
+  </header>
+  <div class="page__body">
+    <form class="form" action="mailto:hello@example.com" method="post" enctype="text/plain">
+      <label>Name<input name="name" autocomplete="name" required></label>
+      <label>Email<input name="email" type="email" autocomplete="email" required></label>
+      <label>Inquiry type<select name="type"><option>Partnership</option><option>Appearance</option><option>Press</option><option>Other</option></select></label>
+      <label>Message<textarea name="message" required></textarea></label>
+      <button class="btn" type="submit"><span>Send</span></button>
+      <p class="form__note">This form opens your email client. Swap the <code>action</code> for your own form endpoint when you deploy.</p>
+    </form>
+  </div>
+</main>
+<div data-chrome="footer"></div>
+<script src="js/art.js"></script>
+<script src="js/chrome.js"></script>
+</body>
+</html>
