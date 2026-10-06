@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>lateframe — Devansh Sharma, video editor</title>
-  <meta name="description" content="lateframe is the portfolio of Devansh Sharma: Instagram edits, reels, color, motion and sound — cut frame by frame.">
+  <title>lateframe — video edits, reels &amp; motion</title>
+  <meta name="description" content="lateframe: Instagram edits, reels, color, motion and sound — cut frame by frame.">
   <meta name="theme-color" content="#0A0A0C">
-  <meta property="og:title" content="lateframe — Devansh Sharma">
+  <meta property="og:title" content="lateframe">
   <meta property="og:description" content="Instagram edits, reels, color, motion and sound — cut frame by frame.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="assets/brand/logo-lf.jpg">
@@ -28,27 +28,34 @@
 
 <main id="main" tabindex="-1">
 
-  <!-- ===== Hero: the camera. Scroll → it swings round, then the monitor becomes the screen ===== -->
+  <!-- ===== Hero: the camera stays put; scroll → the monitor comes closer until it becomes the screen ===== -->
   <section class="cam" data-cam data-tone="light">
-    <h1 class="sr-only">lateframe — Devansh Sharma, video editor</h1>
+    <h1 class="sr-only">lateframe — video edits, reels and motion</h1>
     <div class="cam__pin" data-pin>
       <div class="cam__bg" aria-hidden="true"><div class="cam__blocks"><i></i><i></i><i></i></div></div>
 
-      <div class="cam__stage" data-stage-el aria-hidden="true">
+      <div class="cam__bgword" aria-hidden="true"><span>LATEFRAME</span></div>
+
+      <div class="cam__stage" data-stage-el>
         <div class="cam__zoom" data-zoom>
           <div class="cam__shadow" data-shadow></div>
           <div class="cam__rig" data-rig>
             <img class="cam__img" src="assets/camera/fx6.webp" alt="" width="1600" height="1408" decoding="async">
             <div class="cam__mon" data-mon>
-              <div class="cam__scr"><div class="cam__scr-in">
+              <div class="cam__scr" aria-hidden="true"><div class="cam__scr-in" data-scrin>
                 <div class="cam__reels" data-reels></div>
+                <div class="cam__wb" data-wb></div>
                 <div class="cam__scrim"></div>
                 <div class="cam__ui cam__ui--top"><span class="cam__rec"><i></i><b data-tc>REC 00:00:00:00</b></span><span><b data-title></b> · <b data-idx></b></span></div>
                 <div class="cam__ui cam__ui--bot"><div><div class="cam__big" data-big></div><div class="cam__bigtag" data-bigtag></div></div><span class="cam__scroll">Scroll ↓</span></div>
+                <div class="cam__set" data-set><span data-s="iso"></span><span data-s="wb"></span><span data-s="shut"></span><span data-s="nd"></span><span data-s="af" class="cam__set-af">AF ◉</span></div>
+                <div class="cam__meters" data-meters><i></i><i></i></div>
+                <div class="cam__menu" data-menu><b>MENU · REELS</b><ol data-menu-list></ol></div>
                 <div class="cam__flash" data-flash></div>
               </div></div>
               <div class="cam__monfoot"><span>LATEFRAME</span><span class="cam__knobs"><i></i><i></i><i></i></span></div>
             </div>
+            <div class="cam__hot" data-hot><i class="cam__lensglow" data-lensglow></i></div>
           </div>
         </div>
       </div>
@@ -56,8 +63,7 @@
       <div class="cam__ui-page" aria-hidden="true">
         <i class="cam__br cam__br--tl"></i><i class="cam__br cam__br--tr"></i><i class="cam__br cam__br--bl"></i><i class="cam__br cam__br--br"></i>
         <div class="cam__hud"><span class="cam__rec"><i></i>REC</span><span data-tc-page>00:00:00:00</span><span>4K · 23.976 · 180°</span></div>
-        <div class="cam__word"><div class="cam__h1">lateframe</div><p>Edits · Reels · Motion</p></div>
-        <div class="cam__hud-bot"><span>Scroll ↓</span><span data-now></span></div>
+        <div class="cam__hud-bot"><span>Scroll ↓</span><span>Try the lens · REC · dials</span><span data-now></span></div>
       </div>
     </div>
   </section>

@@ -7,8 +7,8 @@
 
   const SITE = {
     brand: "lateframe",
-    name: "Devansh Sharma",
-    legalName: "Devansh Sharma",
+    name: "lateframe",
+    legalName: "lateframe",
     role: "Video editor",
     email: "hello@example.com", // ← your contact email
     nav: [
@@ -28,8 +28,8 @@
       { label: "Privacy", href: "privacy.html" },
       { label: "Terms", href: "terms.html" },
     ],
-    credit: { label: "Built with Lateframe", href: "index.html" },
-    projectBy: { label: "lateframe — edits by Devansh Sharma", href: "index.html" },
+    credit: { label: "lateframe.", href: "index.html" },
+    projectBy: { label: "Edits · Reels · Motion", href: "index.html" },
     /* Words that drift through the footer / capabilities marquee */
     skills: ["Reels", "Color grade", "Motion graphics", "Sound design", "Beat sync", "Pacing", "Transitions", "Captions", "VFX cleanup", "Storytelling"],
     /* Footer call-to-action per page (data-footer on <body>) */

@@ -1,7 +1,6 @@
 # lateframe
 
-Portfolio site for **Devansh Sharma**, video editor — his edits, Instagram reels and
-editing capabilities. Plain HTML + CSS + vanilla JS: no build step, no dependencies,
+Portfolio site for **lateframe** — video edits, Instagram reels and editing capabilities. Plain HTML + CSS + vanilla JS: no build step, no dependencies,
 deploys anywhere static files do.
 
 > Everything visual is **placeholder** (generated gradients, a silhouette portrait, sample
@@ -19,7 +18,7 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | --- | --- |
 | Intro | The "late frame" logo sequence (below) — doubles as a real preloader |
 | Nav + menu | Fixed logo/hamburger that recolours per section; full-screen menu with a wipe-fill hover |
-| Hero | A cinema camera on **pebbled white leather**; its flip-out monitor plays your reels. Scroll → the camera swings round, then the view pushes in until **the monitor becomes the main screen** |
+| Hero | A cinema camera that **stays perfectly still** on pebbled white leather, with a huge pale **LATEFRAME** behind it. Its flip-out monitor plays your reels; scroll and **only the screen comes closer** until it becomes the main screen. The camera is **playable** (below) |
 | Selected Edits | Dark **timeline** with a timecode ruler and a red playhead; a horizontal reel of floating 9:16 cards. Click a card → modal with the video (or poster) and a "Watch on Instagram" button |
 | Statement | REC chip + "Every cut has a reason." with frame-grab polaroids that fan out |
 | Straight from the feed | Accordion reel tiles (snap carousel on phones) linking to the Instagram page |
@@ -28,6 +27,23 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | Footer | Glass nav panel, headline reveal, CTA, skills marquee, sound toggle |
 
 Other pages: **Edits**, **Instagram**, **Capabilities**, **About**, **Contact**, Privacy, Terms.
+
+## Playable camera
+
+Hover (or tap) the real controls on the camera photo:
+
+| Control | Does |
+| --- | --- |
+| Lens | **Rack focus** — the monitor racks from blurry to sharp |
+| **REC** button | Toggles record ↔ standby (timecode freezes at `STBY`) |
+| **MENU** | Opens a reel list on the monitor — pick any reel |
+| **ISO / WB / SHUTTER** | Cycle ISO, white balance (tints the image) and shutter angle |
+| **ND dial** | Cycles the ND filter (darkens/brightens the image) |
+| Audio knobs | Toggle live audio meters |
+| The monitor itself | Cut to the next reel (click or Enter) |
+
+Hotspots are positioned in the photo's own pixel space (`HOT` in `js/camera.js`), so if you swap the camera
+photo, re-measure them. They switch off once you start scrolling into the screen.
 
 ## The intro (logo animation + preloader)
 
