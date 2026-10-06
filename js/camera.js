@@ -55,6 +55,9 @@
     tc: $("[data-tc]"), scrin: $("[data-scrin]"), set: $("[data-set]"), wb: $("[data-wb]"), meters: $("[data-meters]"), menu: $("[data-menu]"), menuList: $("[data-menu-list]"), hot: $("[data-hot]"), lensglow: $("[data-lensglow]"), reelsBox: $("[data-reels]"), tcPage: $("[data-tc-page]"), now: $("[data-now]"), title: $("[data-title]"), idx: $("[data-idx]"), flash: $("[data-flash]"), pin: $("[data-pin]"), big: $("[data-big]"), bigTag: $("[data-bigtag]"),
   };
   let ZOOM = 9, S = 1;
+  let indexEl = null, fc = 0, lastFlash = "", lastFade = -1, lastHint = -1;
+  const fadeEls = [$(".cam__ui-page"), $(".cam__sides"), $(".cam__bgword")].filter(Boolean);
+  const hintEls = [...host.querySelectorAll(".cam__hud-bot span:nth-child(-n+2)")];
 
   function layout() {
     const vw = innerWidth, vh = innerHeight;
@@ -67,18 +70,13 @@
   /* ---------- per-frame ---------- */
   let cur = 0, last = performance.now(), t0 = last, visible = true, lastReel = -1, lastTcSec = -1;
   let clock = 0, recT = 0, recording = true, menuOpen = false;
-  const SMOOTH = 0.7;
 
-  function target() {
-    const r = host.getBoundingClientRect();
-    const total = r.height - innerHeight;
-    return total > 0 ? clamp(-r.top / total) : 0;
-  }
+  const target = () => LF.pin(host);
 
   function frame(now) {
     const dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = now;
     const tgt = target();
-    cur += (tgt - cur) * (1 - Math.exp(-dt * (9 - SMOOTH * 7)));
+    cur += (tgt - cur) * (1 - Math.exp(-dt * 18));      // short ease: smooth, but never feels behind your scroll
     if (Math.abs(tgt - cur) < 0.00005) cur = tgt;
     window.LF.camProgress = cur;
     clock += dt; if (recording) recT += dt;
@@ -96,9 +94,11 @@
     el.zoom.style.transformOrigin = `${cx}px ${cy}px`;
     el.zoom.style.transform = zt < 1e-4 ? "none" : `translate(${(W / 2 - cx) * zt}px, ${(H / 2 - cy) * zt}px) scale(${scale})`;
     el.mon.style.transform = `skewY(${MON.skew * (1 - zt)}deg)`;
-    el.pin.style.setProperty("--fade", (1 - seg(sp, 0.10, 0.34)).toFixed(3));
-    el.pin.style.setProperty("--hint", (1 - seg(sp, 0.01, 0.07)).toFixed(3));
-    el.pin.style.setProperty("--zt", zt.toFixed(3));
+    // write opacities straight onto the few elements that use them (a custom property on the container would re-style the whole subtree)
+    const fq = Math.round((1 - seg(sp, 0.10, 0.34)) * 100) / 100;
+    if (fq !== lastFade) { lastFade = fq; for (const n of fadeEls) n.style.opacity = fq; }
+    const hq = Math.round((1 - seg(sp, 0.01, 0.07)) * 100) / 100;
+    if (hq !== lastHint) { lastHint = hq; for (const n of hintEls) n.style.opacity = hq; }
 
     // reels on the monitor
     const idx = Math.max(0, Math.min(N - 1, Math.floor(T / CUT))), local = Math.max(0, T - idx * CUT);
@@ -111,12 +111,15 @@
       el.big.textContent = e.title || "";
       el.now.textContent = `Now playing — Reel ${p2(idx + 1)} · ${(e.title || "").toUpperCase()}`;
       el.bigTag.textContent = e.tag || "";
+      if (indexEl) [...indexEl.children].forEach((li, i) => li.classList.toggle("is-on", i === idx));
     }
-    reels[idx].style.setProperty("--kb", (1.08 - 0.08 * sine(seg(local, 0, CUT))).toFixed(4));
-    el.flash.style.opacity = ((1 - outCubic(seg(local, 0, 0.35))) * 0.85).toFixed(3);
+    if (indexEl && indexEl.children[idx]) indexEl.children[idx].style.setProperty("--p", (local / CUT).toFixed(3));
+    if ((fc++ & 3) === 0) reels[idx].style.setProperty("--kb", (1.08 - 0.08 * sine(seg(local, 0, CUT))).toFixed(3));   // slow push: ~15 updates/s is plenty
+    const fl = local < 0.4 ? ((1 - outCubic(seg(local, 0, 0.35))) * 0.85).toFixed(3) : "0";
+    if (fl !== lastFlash) { lastFlash = fl; el.flash.style.opacity = fl; }
     const sec = Math.floor(recT * 24) * 2 + (recording ? 1 : 0);
     if (sec !== lastTcSec) { lastTcSec = sec; paintTc(); }
-    host.classList.toggle("is-zoomed", zt > 0.985);
+    host.classList.toggle("is-zoomed", zt > 0.97);
     host.classList.toggle("is-moving", zt > 0.02);
 
     // nav colour: dark logo on the white background, light once the screen takes over
@@ -143,7 +146,9 @@
   function paintSettings() {
     const put = (k, t) => { const n = el.set.querySelector(`[data-s="${k}"]`); if (n) n.textContent = t; };
     put("iso", "ISO " + ISO[st.iso]); put("wb", WB[st.wb] + "K"); put("shut", SH[st.sh]); put("nd", "ND " + ND[st.nd].toFixed(1));
-    el.reelsBox.style.filter = `brightness(${(ISO_F[st.iso] * ND_F[st.nd]).toFixed(3)})`;
+    const exp = ISO_F[st.iso] * ND_F[st.nd];
+    el.reelsBox.style.filter = Math.abs(exp - 1) < 0.002 ? "" : `brightness(${exp.toFixed(3)})`;   // no filter layer at neutral exposure
+    el.wb.style.display = st.wb === 2 ? "none" : "";                                              // blend layer only when tinted
     el.wb.style.background = WB_C[st.wb];
     el.meters.classList.toggle("is-on", st.meters);
   }
@@ -184,6 +189,12 @@
   el.mon.addEventListener("click", (e) => { if (e.target.closest(".cam__menu")) return; nextReel(); });
   el.mon.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); nextReel(); } });
   addEventListener("keydown", (e) => e.key === "Escape" && menuOpen && toggleMenu(false));
+  // reel index on the right-hand side of the hero
+  indexEl = document.querySelector("[data-index]");
+  if (indexEl) {
+    indexEl.innerHTML = EDITS.map((e, i) => `<li><button type="button" data-i="${i}"><span class="cam__ix-n">${p2(i + 1)}</span><span class="cam__ix-t">${e.title}</span><span class="cam__ix-a">${e.ar === "v" ? "9:16" : "16:9"}</span><i class="cam__ix-bar"></i></button></li>`).join("");
+    indexEl.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) jump(+b.dataset.i); });
+  }
   buildMenu(); paintSettings(); paintTc();
 
   layout();

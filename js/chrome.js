@@ -29,7 +29,7 @@
       { label: "Terms", href: "terms.html" },
     ],
     credit: { label: "lateframe.", href: "index.html" },
-    projectBy: { label: "Edits · Reels · Motion", href: "index.html" },
+    projectBy: { label: "Frames that stay.", href: "index.html" },
     /* Words that drift through the footer / capabilities marquee */
     skills: ["Reels", "Color grade", "Motion graphics", "Sound design", "Beat sync", "Pacing", "Transitions", "Captions", "VFX cleanup", "Storytelling"],
     /* Footer call-to-action per page (data-footer on <body>) */
@@ -119,7 +119,7 @@
             <a class="btn btn--yellow" href="${cta.cta.href}"><span>${cta.cta.label}</span></a>
           </div>
         </div>
-        <div class="footer__cutout" aria-hidden="true"><img src="assets/camera/fx6.webp" alt="" width="1600" height="1408" loading="lazy" decoding="async"></div>
+        <div class="footer__cutout" aria-hidden="true"><img src="assets/camera/fx6-lf.webp" alt="" width="1039" height="607" loading="lazy" decoding="async"></div>
         <div class="footer__panel">
           <div class="footer__panel-in">
             <a class="footer__logo" href="index.html" aria-label="Home">${window.LF.logoSvg()}</a>
@@ -172,6 +172,26 @@
   /* data-src → background image (drop real photos in without touching CSS) */
   document.querySelectorAll(".ph[data-src]").forEach((el) => (el.style.backgroundImage = `url("${el.dataset.src}")`));
 
+  /* ---- cached section geometry: no layout reads while scrolling ---- */
+  const tracked = new Map();
+  const measure = () => { const sy = scrollY; tracked.forEach((g, el) => { const r = el.getBoundingClientRect(); g.top = r.top + sy; g.h = r.height; }); };
+  const track = (el) => { let g = tracked.get(el); if (!g) { g = { top: 0, h: 0 }; tracked.set(el, g); const r = el.getBoundingClientRect(); g.top = r.top + scrollY; g.h = r.height; } return g; };
+  let mRaf = 0; const remeasure = () => { cancelAnimationFrame(mRaf); mRaf = requestAnimationFrame(measure); };
+  addEventListener("resize", remeasure); addEventListener("load", remeasure);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
+  if ("ResizeObserver" in window) new ResizeObserver(remeasure).observe(document.body);
+  window.LF.track = track;
+  /** 0 to 1 progress of a tall section that holds a sticky child */
+  window.LF.pin = (el) => { const g = track(el), total = g.h - innerHeight; return total > 0 ? Math.min(1, Math.max(0, (scrollY - g.top) / total)) : 0; };
+  /** true when the section is within `pad` px of the viewport */
+  window.LF.near = (el, pad = 200) => { const g = track(el); return scrollY + innerHeight > g.top - pad && scrollY < g.top + g.h + pad; };
+
+  /* ---- pause looping CSS animations on sections that are off-screen ---- */
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle("is-off", !e.isIntersecting)), { rootMargin: "120px" });
+    document.querySelectorAll("[data-cam], .stage, .tail, .play, footer.footer").forEach((n) => io.observe(n));
+  }
+
   /* Nav colour follows the section beneath it */
   const root = document.documentElement;
   let toneEls = [];
@@ -182,7 +202,8 @@
     if (o) return window.LF.setTone(o);
     if (!toneEls.length) collect();
     const y = 40;
-    for (const el of toneEls) { const r = el.getBoundingClientRect(); if (r.top <= y && r.bottom >= y) return window.LF.setTone(el.dataset.tone); }
+    const py = scrollY + y;
+    for (const el of toneEls) { const g = track(el); if (g.top <= py && g.top + g.h >= py) return window.LF.setTone(el.dataset.tone); }
   };
   addEventListener("scroll", () => window.LF.updateTone(), { passive: true });
   addEventListener("load", () => { collect(); window.LF.updateTone(); });

@@ -17,11 +17,7 @@
   const isDesktop = () => innerWidth >= 900;
 
   /** Scroll progress of a tall section containing a sticky child (0 at pin start, 1 at pin end). */
-  const progress = (el) => {
-    const r = el.getBoundingClientRect();
-    const total = r.height - innerHeight;
-    return total > 0 ? clamp(-r.top / total) : 0;
-  };
+  const progress = (el) => LF.pin(el);   // cached geometry: no layout reads while scrolling
 
   /* ---------- Timeline ruler (generated) ---------- */
   const yards = $("[data-yards]");
@@ -57,6 +53,7 @@
     const set = (k, v) => card.style.setProperty(k, v);
     host.addEventListener("pointermove", (e) => {
       if (e.pointerType === "touch") return;
+      host.classList.add("is-hover");
       const r = host.getBoundingClientRect();
       const x = clamp((e.clientX - r.left) / r.width), y = clamp((e.clientY - r.top) / r.height);
       set("--ry", ((x - 0.5) * 2 * max).toFixed(2) + "deg");
@@ -69,6 +66,7 @@
     });
     host.addEventListener("pointerleave", () => {
       ["--ry", "--rx", "--tz"].forEach((k) => card.style.removeProperty(k));
+      host.classList.remove("is-hover");
       set("--hover", 0); set("--scale", 1); host.style.setProperty("--hover", 0);
     });
   }
@@ -133,7 +131,7 @@
       : [{ x: -0.26 * w, y: -0.3 * innerHeight, r: -9 }, { x: 0.24 * w, y: 0.3 * innerHeight, r: 8 }, { x: 0, y: 0.5 * innerHeight, r: -3 }];
   };
   function updateQuote() {
-    if (!quote) return;
+    if (!quote || !LF.near(quote)) return;
     const p = progress(quote);
     const f = fan();
     pols.forEach((el, i) => {
@@ -174,7 +172,8 @@
   const panelHost = $("[data-ppanel]");
   let activeBrand = -1;
   let tailTone = null;
-  window.LF.toneOverride = () => { const c = $("[data-cam]"); if (c) { const r = c.getBoundingClientRect(); if (r.top <= 40 && r.bottom >= 40) return LF.camTone || "light"; } return tailTone; };
+  const camEl = $("[data-cam]");
+  window.LF.toneOverride = () => { if (camEl) { const g = LF.track(camEl), y = scrollY + 40; if (g.top <= y && g.top + g.h >= y) return LF.camTone || "light"; } return tailTone; };
   if (dotsHost && panelHost) {
     dotsHost.innerHTML = BRANDS.map((b, i) => `<button type="button" aria-label="${b.name}" data-i="${i}"><span></span></button>`).join("");
     panelHost.innerHTML = BRANDS.map((b) => `<div><h3 class="heading">${b.name}</h3><p>${b.copy}</p></div>`).join("");
@@ -190,21 +189,21 @@
     const b = e.target.closest("button");
     if (!b || !tail) return;
     const i = +b.dataset.i;
-    const r = tail.getBoundingClientRect();
-    const total = r.height - innerHeight;
+    const g = LF.track(tail), total = g.h - innerHeight;
     const p = 0.34 + ((i + 0.5) / BRANDS.length) * 0.62;
-    scrollTo({ top: scrollY + r.top + p * total, behavior: reduce ? "auto" : "smooth" });
+    scrollTo({ top: g.top + p * total, behavior: reduce ? "auto" : "smooth" });
   });
   function updateTail() {
     if (!tail) return;
+    if (!LF.near(tail)) { tailTone = null; return; }
     const p = progress(tail);
     const wipe = ease(seg(p, 0.1, 0.3));
     pstage.style.setProperty("--p-wipe", (1 - wipe).toFixed(4)); // 1 = hidden below, 0 = fully covering
     const settle = seg(p, 0.3, 0.42);
     pstage.style.setProperty("--p-settle", ((1 - easeOut(settle)) * 6).toFixed(2) + "vh");
     pstage.style.setProperty("--p-scale", lerp(1.06, 1, easeOut(settle)).toFixed(4));
-    const tr = tail.getBoundingClientRect();
-    tailTone = tr.top <= 40 && tr.bottom >= 40 ? (wipe > 0.55 ? "dark" : "light") : null;
+    const tg = LF.track(tail), ty = scrollY + 40;
+    tailTone = tg.top <= ty && tg.top + tg.h >= ty ? (wipe > 0.55 ? "dark" : "light") : null;
     const bp = seg(p, 0.34, 0.97);
     setBrand(clamp(Math.floor(bp * BRANDS.length), 0, BRANDS.length - 1));
   }
@@ -248,14 +247,16 @@
   /* ---------- Stage: the Selected Edits timeline reel ---------- */
   const stage = $("[data-stage]");
   const reel = $("[data-reel]");
+  let reelMax = 0, yardsMax = 0;
+  const measureReel = () => { reelMax = Math.max(0, reel.scrollWidth - innerWidth); yardsMax = yards ? Math.max(0, yards.scrollWidth - innerWidth) * 0.55 : 0; };
+  addEventListener("resize", measureReel); addEventListener("load", measureReel); measureReel();
+  let lastRp = -1;
   function updateStage() {
-    if (!stage) return;
-    const p = progress(stage);
-    stage.style.setProperty("--wipe", "1");
-    const rp = seg(p, 0.04, 1);
-    const maxShift = Math.max(0, reel.scrollWidth - innerWidth);
-    reel.style.transform = `translate3d(${(-rp * maxShift).toFixed(1)}px, 0, 0)`;
-    if (yards) yards.style.transform = `translate3d(${(-rp * Math.max(0, yards.scrollWidth - innerWidth) * 0.55).toFixed(1)}px, 0, 0)`;
+    if (!stage || !LF.near(stage)) return;
+    const rp = Math.round(seg(progress(stage), 0.04, 1) * 4000) / 4000;
+    if (rp === lastRp) return; lastRp = rp;
+    reel.style.transform = `translate3d(${(-rp * reelMax).toFixed(1)}px, 0, 0)`;
+    if (yards) yards.style.transform = `translate3d(${(-rp * yardsMax).toFixed(1)}px, 0, 0)`;
   }
 
   /* ---------- Frame loop ---------- */

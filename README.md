@@ -24,9 +24,15 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | Straight from the feed | Accordion reel tiles (snap carousel on phones) linking to the Instagram page |
 | Capabilities | Diagonal wipe into a pinned showcase that steps through each service (dots, panel, marquee) |
 | Every frame is a decision | Auto-drifting, draggable rail of stills |
-| Footer | Glass nav panel, headline reveal, CTA, skills marquee, sound toggle |
+| Footer | Glass nav panel, headline reveal, CTA, skills marquee, sound toggle, and a **second camera** (`assets/camera/fx6-lf.webp`) with the lf. mark on the lens |
 
 Other pages: **Edits**, **Instagram**, **Capabilities**, **About**, **Contact**, Privacy, Terms.
+
+## Motto
+
+**Frames that stay.** It sits on the left of the hero (with a short blurb and tags), in the footer panel, the page
+title and meta description. Change it in `index.html` (`.cam__motto`) and the `SITE.projectBy` label in `js/chrome.js`.
+The right of the hero is a live **Now playing** reel index — click a row to cut the monitor to that reel.
 
 ## Playable camera
 
@@ -91,3 +97,20 @@ photo, re-measure them. They switch off once you start scrolling into the screen
 
 Scroll choreography is one `requestAnimationFrame` loop in `js/home.js` that reads each pinned
 section's progress and writes CSS variables. `prefers-reduced-motion` is respected.
+
+## Performance notes
+
+Scroll animation is deliberately cheap — keep it that way when adding to it:
+
+- No layout reads while scrolling: section geometry is cached (`LF.pin(el)`, `LF.near(el)` in `js/chrome.js`).
+- Per-frame values are written straight onto the elements that use them, never as a CSS variable on a big
+  container (that re-styles the whole subtree).
+- No always-on `mix-blend-mode`, `backdrop-filter` or big `filter: blur()` layers; the leather texture is baked
+  (`assets/textures/leather-sand.jpg`) instead of blended.
+- Looping CSS animations pause when their section is off-screen (`.is-off`, set by an IntersectionObserver).
+- Scroll easing is short (≈60 ms) so motion never feels like it is trailing your scroll.
+
+## Footer camera asset
+
+`assets/camera/fx6-lf.webp` was cut out of the supplied render (GrabCut), the original "L.F" text was inpainted away
+and the traced lf. logo composited onto the lens; the cropped left edge is faded out.
