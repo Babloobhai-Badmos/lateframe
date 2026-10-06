@@ -19,7 +19,7 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | --- | --- |
 | Intro | The "late frame" logo sequence (below) — doubles as a real preloader |
 | Nav + menu | Fixed logo/hamburger that recolours per section; full-screen menu with a wipe-fill hover |
-| Hero | Pinned scene: giant scrolling name, a **DSLR with its lens facing you** (glints follow the cursor), a tilting "latest reel" card; wipes away diagonally |
+| Hero | A cinema camera on **pebbled white leather**; its flip-out monitor plays your reels. Scroll → the camera swings round, then the view pushes in until **the monitor becomes the main screen** |
 | Selected Edits | Dark **timeline** with a timecode ruler and a red playhead; a horizontal reel of floating 9:16 cards. Click a card → modal with the video (or poster) and a "Watch on Instagram" button |
 | Statement | REC chip + "Every cut has a reason." with frame-grab polaroids that fan out |
 | Straight from the feed | Accordion reel tiles (snap carousel on phones) linking to the Instagram page |
@@ -41,7 +41,8 @@ Other pages: **Edits**, **Instagram**, **Capabilities**, **About**, **Contact**,
 4. When everything is ready (never before 3.3 s), frame **24** lands: the period slams in with a flash,
    shockwave rings and screen shake. The hero then reveals as the screen splits open like a shutter.
 
-- Slow connection? It keeps waiting (12 s hard cap) and a **Skip intro** button appears after ~1.4 s.
+- Slow connection? It keeps waiting (12 s hard cap). There's deliberately no loading bar or skip button —
+  the timecode *is* the progress.
 - Plays on first open and on reload; navigating between pages inside the site skips it.
   Force it with `?intro`, disable it with `?nointro`. `prefers-reduced-motion` gets a calm fade version.
 - Add your own assets to the wait: `LF.preload("assets/video/clip.mp4", "video")` or `"image"`.
@@ -51,10 +52,11 @@ Other pages: **Edits**, **Instagram**, **Capabilities**, **About**, **Contact**,
 
 1. **Instagram, email, socials** — edit the `SITE` object at the top of `js/chrome.js`
    (set the real Instagram profile URL and contact email). Nav, menu and footer update everywhere.
-2. **Reels** — the reel cards, hero card and modal all come from the `EDITS` array at the top of
-   `js/home.js`:
+2. **Reels** — the camera's monitor, the floating reel cards and the modal all read the `EDITS` array in
+   `js/edits.js`:
    ```js
    { title: "Neon Nights", tag: "Cinematic edit", hue: 15,
+     ar: "h",                                   // "h" = 16:9, "v" = 9:16 (pillarboxed on the monitor)
      image: "assets/img/neon-nights.webp",   // poster still (optional)
      video: "assets/video/neon-nights.mp4",   // preview that plays in the modal (optional)
      link:  "https://instagram.com/reel/XXXX" // the original reel (optional)
@@ -62,8 +64,9 @@ Other pages: **Edits**, **Instagram**, **Capabilities**, **About**, **Contact**,
    ```
 3. **Photos elsewhere** — any `.ph` placeholder takes a real image without CSS changes:
    `<div class="ph" data-src="assets/img/photo.webp"></div>`
-4. **Hero camera** — `js/art.js` draws the DSLR in SVG (hero + footer). Replace `LF.camera()`'s output with an
-   `<img>` of a transparent PNG/WebP photo of your own camera if you'd like.
+4. **Hero camera** — `assets/camera/fx6.webp` (a transparent cut-out). To use a different camera, swap the image
+   and re-measure where its flip-out monitor sits (`MON` / `SCR` constants at the top of `js/camera.js`).
+   The white pebbled-leather background is `assets/textures/leather.jpg` (tiles seamlessly).
 5. **Capabilities** — the six services are in `BRANDS` in `js/home.js` and in `capabilities.html`.
 6. **Copy** — About and legal pages are placeholder text. Colours/type: tokens in `:root` of
    `css/styles.css`. The logo artwork is `assets/brand/logo-lf.jpg` (also the social-share image —

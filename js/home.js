@@ -23,10 +23,6 @@
     return total > 0 ? clamp(-r.top / total) : 0;
   };
 
-  /* ---------- Hero camera (DSLR facing the viewer) ---------- */
-  const portraitHost = $("[data-portrait]");
-  if (portraitHost && window.LF && LF.camera) portraitHost.innerHTML = LF.camera("hero");
-
   /* ---------- Timeline ruler (generated) ---------- */
   const yards = $("[data-yards]");
   if (yards) {
@@ -40,17 +36,8 @@
     yards.style.width = "calc(76vw * var(--n, 4))";
   }
 
-/* ---------- Edits (edit this array — one entry per reel) ----------
-     image : poster still (e.g. "assets/img/neon-nights.webp")  → optional
-     video : short mp4 preview that plays in the modal          → optional
-     link  : the reel's Instagram URL (falls back to your profile) */
-  const EDITS = [
-    { title: "Neon Nights", tag: "Cinematic edit", hue: 15, dy: -10, dur: 6.4, delay: 0 },
-    { title: "Beat Drop", tag: "Beat-synced cuts", hue: 200, dy: 12, dur: 7.5, delay: -1.3 },
-    { title: "Whip & Warp", tag: "Transitions", hue: 330, dy: -15, dur: 8.6, delay: -2.5 },
-    { title: "Golden Hour", tag: "Color grade", hue: 40, dy: 8, dur: 6.4, delay: -3.8 },
-    { title: "Hyperdrive", tag: "Speed ramps", hue: 265, dy: -5, dur: 7.5, delay: -5 },
-  ];
+  /* ---------- Edits (defined in js/edits.js) ---------- */
+  const EDITS = (window.LF && LF.EDITS) || [];
   const igUrl = ((window.SITE && SITE.socials.find((x) => x.id === "instagram")) || {}).url || "https://instagram.com/";
   const cardFace = (e, i) =>
     `<div class="tcard"><div class="tcard__face"><div class="ph" style="--h:${e.hue}" data-label="${e.title}"${e.image ? ` data-src="${e.image}"` : ""}></div><span class="tcard__num">${String(i + 1).padStart(2, "0")}</span><span class="tcard__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><div class="tcard__sheen"></div><div class="tcard__holo"></div></div></div>`;
@@ -59,18 +46,10 @@
     reelHost.innerHTML = EDITS.map((e, i) =>
       `<div class="reel__item" style="--dy:${e.dy}"><div class="reel__shift"><div class="reel__card" role="button" tabindex="0" aria-label="Play ${e.title}" data-cursor="Play" data-card data-i="${i}" style="--dur:${e.dur}s;--delay:${e.delay}s">${cardFace(e, i)}</div><div class="reel__caption"><p class="label">${e.title}</p><p class="label-sm">${e.tag}</p></div></div></div>`).join("");
   }
-  const heroCardEl = $("[data-hero-card]");
-  if (heroCardEl) heroCardEl.innerHTML = cardFace(EDITS[0], 0);
   $$(".ph[data-src]").forEach((el) => (el.style.backgroundImage = `url("${el.dataset.src}")`));
   // Let the intro wait for the reel posters / previews before it reveals the site
   EDITS.forEach((e, i) => { LF.preload && LF.preload(e.image, "image"); LF.preload && LF.preload(e.video, "video"); });
 
-  // Lens glints follow the pointer (both cameras read --lx / --ly on <html>)
-  if (matchMedia("(hover:hover)").matches && !reduce) {
-    let px = 0, py = 0, cx = 0, cy = 0, raf = 0;
-    const loopLens = () => { cx += (px - cx) * 0.1; cy += (py - cy) * 0.1; document.documentElement.style.setProperty("--lx", cx.toFixed(3)); document.documentElement.style.setProperty("--ly", cy.toFixed(3)); raf = Math.abs(px - cx) + Math.abs(py - cy) > 0.002 ? requestAnimationFrame(loopLens) : 0; };
-    addEventListener("pointermove", (e) => { px = (e.clientX / innerWidth - 0.5) * 2; py = (e.clientY / innerHeight - 0.5) * 2; if (!raf) raf = requestAnimationFrame(loopLens); }, { passive: true });
-  }
 
   /* ---------- 3D tilt for reel cards ---------- */
   function tilt(host, card, opts = {}) {
@@ -93,8 +72,6 @@
       set("--hover", 0); set("--scale", 1); host.style.setProperty("--hover", 0);
     });
   }
-  const heroCardHost = $("[data-hero-card]");
-  if (heroCardHost) tilt(heroCardHost, $(".tcard", heroCardHost));
   $$("[data-card]").forEach((c) => tilt(c, $(".tcard", c)));
 
   /* ---------- Reel modal ---------- */
@@ -132,8 +109,6 @@
     c.addEventListener("click", () => openModal(+c.dataset.i));
     c.addEventListener("keydown", (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), openModal(+c.dataset.i)));
   });
-  const heroCard = $("[data-hero-card]");
-  heroCard && heroCard.addEventListener("click", () => openModal(0));
   modal.addEventListener("click", (e) => (e.target === modal || e.target.closest("[data-modal-close]")) && closeModal());
   addEventListener("keydown", (e) => e.key === "Escape" && modal.classList.contains("is-open") && closeModal());
 
@@ -199,7 +174,7 @@
   const panelHost = $("[data-ppanel]");
   let activeBrand = -1;
   let tailTone = null;
-  window.LF.toneOverride = () => tailTone;
+  window.LF.toneOverride = () => { const c = $("[data-cam]"); if (c) { const r = c.getBoundingClientRect(); if (r.top <= 40 && r.bottom >= 40) return LF.camTone || "light"; } return tailTone; };
   if (dotsHost && panelHost) {
     dotsHost.innerHTML = BRANDS.map((b, i) => `<button type="button" aria-label="${b.name}" data-i="${i}"><span></span></button>`).join("");
     panelHost.innerHTML = BRANDS.map((b) => `<div><h3 class="heading">${b.name}</h3><p>${b.copy}</p></div>`).join("");
@@ -270,24 +245,17 @@
     playRow.style.transform = `translate3d(${playX}px, 0, 0)`;
   }
 
-  /* ---------- Stage: hero wipe → moments reel ---------- */
+  /* ---------- Stage: the Selected Edits timeline reel ---------- */
   const stage = $("[data-stage]");
-  const clip = $("[data-hero-clip]");
   const reel = $("[data-reel]");
   function updateStage() {
     if (!stage) return;
     const p = progress(stage);
-    const HOLD = 0.1, WIPE = 0.34;
-    const wipe = ease(seg(p, HOLD, WIPE));
-    stage.style.setProperty("--wipe", wipe.toFixed(4));
-    clip.style.visibility = wipe >= 0.999 ? "hidden" : "visible";
-    const rp = seg(p, WIPE - 0.04, 1);
+    stage.style.setProperty("--wipe", "1");
+    const rp = seg(p, 0.04, 1);
     const maxShift = Math.max(0, reel.scrollWidth - innerWidth);
     reel.style.transform = `translate3d(${(-rp * maxShift).toFixed(1)}px, 0, 0)`;
     if (yards) yards.style.transform = `translate3d(${(-rp * Math.max(0, yards.scrollWidth - innerWidth) * 0.55).toFixed(1)}px, 0, 0)`;
-    stage.dataset.tone = wipe > 0.55 ? "dark" : "light";
-    // Hero: parallax portrait a touch on scroll
-    if (portraitHost) portraitHost.style.translate = `0 ${(seg(p, 0, HOLD + 0.1) * 3).toFixed(2)}%`;
   }
 
   /* ---------- Frame loop ---------- */

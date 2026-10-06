@@ -1,0 +1,98 @@
+/* ==========================================================================
+   Hero camera (see js/camera.js)
+   ========================================================================== */
+.cam { position: relative; height: 560vh; background: #f1ede6; color: #171614; }
+@media (max-width: 899px) { .cam { height: 470vh; } }
+.cam__pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; --fade: 1; --hint: 1; --zt: 0; }
+
+/* white, pebbled "ball" leather with soft L-shaped tonal blocks */
+.cam__bg { position: absolute; inset: 0; background-color: #f6f3ee; background-image: linear-gradient(rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.46)), url("../assets/textures/leather.jpg"); background-size: auto, 360px; }
+.cam__blocks { position: absolute; inset: -4vh -4vw; transform: translateY(calc(var(--zt) * -7vh)); pointer-events: none; }
+.cam__blocks i { position: absolute; mix-blend-mode: multiply; }
+.cam__blocks i:nth-child(1) { left: 0; top: 0; width: 46vw; height: 74vh; background: rgba(176, 160, 146, 0.20); clip-path: polygon(0 0, 100% 0, 100% 34%, 40% 34%, 40% 100%, 0 100%); }
+.cam__blocks i:nth-child(2) { right: 0; bottom: 0; width: 58vw; height: 62vh; background: rgba(150, 134, 120, 0.22); clip-path: polygon(100% 0, 100% 100%, 0 100%, 0 66%, 62% 66%, 62% 0); }
+.cam__blocks i:nth-child(3) { left: 8vw; top: 38vh; width: 24vw; height: 30vh; background: rgba(120, 104, 92, 0.12); clip-path: polygon(0 0, 100% 0, 100% 100%, 46% 100%, 46% 42%, 0 42%); }
+.cam__bg::after { content: ""; position: absolute; inset: 0; background: radial-gradient(70% 60% at 62% 48%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 70%); pointer-events: none; }
+
+/* the 1920×1080 design stage, scaled to the viewport */
+.cam__stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; margin: -540px 0 0 -960px; transform: scale(var(--s, 1)); transform-origin: 50% 50%; transition: opacity 1.3s 0.3s, filter 1.4s 0.3s, translate 1.8s 0.3s var(--ease-out); }
+html.js:not(.intro-done) .cam__stage { opacity: 0; filter: blur(16px); translate: 0 50px; }
+.cam__zoom { position: absolute; inset: 0; }
+.cam__shadow { position: absolute; left: 520px; top: 880px; width: 900px; height: 110px; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(52, 38, 26, 0.5) 0%, rgba(52, 38, 26, 0) 70%); }
+.cam__rig { position: absolute; inset: 0; transform-origin: 960px 560px; }
+.cam__img { position: absolute; left: 298px; top: -31px; width: 1328px; height: 1168.64px; max-width: none; display: block; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+
+/* flip-out monitor laid over the camera's LCD */
+.cam__mon { position: absolute; left: 912.2px; top: 183.1px; width: 242px; height: 226px; transform-origin: 0 0; background: #1c1c1b; border-radius: 8px; box-shadow: 0 0 0 1px #0c0c0b inset, 0 2px 0 #2e2e2c inset; z-index: 3; }
+.cam__scr { position: absolute; left: 8px; top: 12px; width: 226px; height: 127px; overflow: hidden; border-radius: 2px; background: #070707; }
+.cam__scr-in { position: absolute; left: 0; top: 0; width: 2260px; height: 1270px; transform: scale(0.1); transform-origin: 0 0; font-family: var(--font-mono); color: #f1efea; }
+.cam__monfoot { position: absolute; left: 10px; right: 10px; top: 157px; display: flex; justify-content: space-between; align-items: center; }
+.cam__monfoot span:first-child { font: 800 9px/1 var(--font-display); letter-spacing: 0.22em; color: #8a8780; }
+.cam__knobs { display: flex; gap: 8px; }
+.cam__knobs i { width: 12px; height: 12px; border-radius: 50%; background: #2c2c2a; box-shadow: 0 0 0 1px #111 inset; }
+
+/* reels playing on the monitor */
+.cam__reels { position: absolute; inset: 0; }
+.cam__reel { position: absolute; inset: 0; opacity: 0; background: #070707; overflow: hidden; }
+.cam__reel.is-on { opacity: 1; }
+.cam__reel-in { position: absolute; inset: 0; transform: scale(var(--kb, 1.08)); }
+.cam__art { position: absolute; inset: 0; background-size: cover; background-position: center; overflow: hidden; display: grid; place-items: center; align-content: center; gap: 14px; }
+.cam__art:not([style*="background-image"]) {
+  background:
+    radial-gradient(120% 90% at 82% 6%, hsl(var(--h) 88% 58% / 0.95), transparent 62%),
+    radial-gradient(90% 80% at 4% 100%, hsl(calc(var(--h) + 40) 72% 32% / 0.9), transparent 70%),
+    linear-gradient(160deg, hsl(var(--h) 55% 22%), hsl(calc(var(--h) + 30) 60% 7%));
+}
+.cam__art video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cam__art-no { font: 800 190px/1 var(--font-display); letter-spacing: 0.04em; text-transform: uppercase; color: rgba(255, 255, 255, 0.9); text-shadow: 0 6px 60px rgba(0, 0, 0, 0.35); }
+.cam__art-h { font: 400 34px var(--font-mono); letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6); }
+.cam__reel--v .cam__art--main { inset: 0 auto 0 50%; width: 714px; margin-left: -357px; }
+.cam__reel--v .cam__art--main .cam__art-no { font-size: 150px; }
+.cam__art--blur { filter: blur(40px) brightness(0.55); transform: scale(1.25); }
+.cam__art--blur > * { display: none; }
+
+.cam__scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0) 38%), linear-gradient(to bottom, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0) 22%); pointer-events: none; }
+.cam__ui { position: absolute; left: 290px; right: 290px; display: flex; justify-content: space-between; align-items: center; font: 500 33px/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.cam__ui--top { top: 150px; }
+.cam__ui--bot { bottom: 120px; align-items: flex-end; }
+.cam__rec { display: flex; align-items: center; gap: 22px; }
+.cam__rec i { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); animation: rec 1s steps(2, jump-none) infinite; }
+.cam__big { font: 800 150px/0.86 var(--font-display); letter-spacing: -0.015em; text-transform: uppercase; }
+.cam__bigtag { margin-top: 18px; font: 400 32px var(--font-mono); letter-spacing: 0.16em; opacity: 0.8; }
+.cam__scroll { opacity: 0.75; }
+.cam__flash { position: absolute; inset: 0; background: #fffdf8; opacity: 0; pointer-events: none; }
+
+/* page-level overlay: wordmark + viewfinder HUD (fades as the zoom starts) */
+.cam__ui-page { position: absolute; inset: 0; z-index: 10; pointer-events: none; opacity: var(--fade); transition: opacity 1s 0.6s; }
+html.js:not(.intro-done) .cam__ui-page { opacity: 0; }
+.cam__word { position: absolute; left: calc(var(--page-x) + 3rem); top: clamp(128px, 17vh, 210px); }
+.cam__word h1, .cam__word .cam__h1 { font: 800 clamp(58px, 7.6vw, 156px) / 0.86 var(--font-display); letter-spacing: -0.02em; text-transform: uppercase; color: #171614; }
+.cam__word p { margin-top: clamp(10px, 1.2vw, 18px); font: 400 clamp(10px, 1vw, 17px) var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: #5f584e; }
+.cam__br { position: absolute; width: clamp(26px, 2.4vw, 46px); height: clamp(26px, 2.4vw, 46px); border: 0 solid #171614; opacity: 0.9; }
+.cam__br--tl { left: clamp(14px, 2.6vw, 50px); top: clamp(14px, 2.6vw, 50px); border-width: 2px 0 0 2px; }
+.cam__br--tr { right: clamp(14px, 2.6vw, 50px); top: clamp(14px, 2.6vw, 50px); border-width: 2px 2px 0 0; }
+.cam__br--bl { left: clamp(14px, 2.6vw, 50px); bottom: clamp(14px, 2.6vw, 50px); border-width: 0 0 2px 2px; }
+.cam__br--br { right: clamp(14px, 2.6vw, 50px); bottom: clamp(14px, 2.6vw, 50px); border-width: 0 2px 2px 0; }
+.cam__hud { position: absolute; left: calc(var(--page-x) + 3rem); right: calc(var(--page-x) + 3rem); top: clamp(86px, 10.5vh, 116px); display: flex; justify-content: space-between; align-items: center; font: 500 clamp(10px, 0.95vw, 17px) var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: #171614; }
+.cam__hud .cam__rec { gap: 10px; }
+.cam__hud .cam__rec i { width: 0.8em; height: 0.8em; }
+.cam__hud-bot { position: absolute; left: calc(var(--page-x) + 3rem); right: calc(var(--page-x) + 3rem); bottom: clamp(36px, 6vh, 70px); display: flex; justify-content: space-between; font: 500 clamp(10px, 0.95vw, 17px) var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: #5f584e; }
+.cam__hud-bot span:first-child { opacity: var(--hint); }
+@media (max-width: 899px) {
+  .cam__word { left: 24px; top: clamp(112px, 15vh, 150px); }
+  .cam__word h1 { font-size: 17vw; }
+  .cam__hud, .cam__hud-bot { left: 24px; right: 24px; }
+  .cam__hud span:nth-child(2), .cam__hud-bot span:nth-child(2) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .cam__stage { transition: none; } .cam__rec i { animation: none; } }
+
+.cam__ui b { font-weight: inherit; }
+
+/* portrait phones: only the middle of the screen is visible once it fills the view, so stack the on-screen text there */
+@media (max-aspect-ratio: 4/5) {
+  .cam__ui { left: 880px; right: 880px; }
+  .cam__ui--top { flex-direction: column; align-items: flex-start; gap: 22px; top: 190px; }
+  .cam__big { font-size: 112px; }
+  .cam__bigtag { font-size: 26px; }
+  .cam__scroll { display: none; }
+}

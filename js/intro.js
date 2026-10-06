@@ -92,34 +92,28 @@
         <div class="intro__tc"><i class="intro__rec"></i><b data-tc>00:00:00</b></div>
         <div class="intro__logo">${LF.logoSvg("", { dot: false }).replace("</svg>", `<path class="lf-ghost" d="${LF.LOGO.dot}"/><path class="lf-dot" d="${LF.LOGO.dot}"/></svg>`)}<i class="intro__ring"></i><i class="intro__ring intro__ring--2"></i></div>
       </div>
-      <div class="intro__bar"><div class="intro__track"><i></i></div><span><b data-pct>0</b>% · loading</span></div>
     </div>`;
   const el = document.createElement("div");
   el.className = "intro";
   el.setAttribute("role", "status");
   el.setAttribute("aria-label", "Loading lateframe");
-  el.innerHTML = `<div class="intro__half intro__half--top">${stage}</div><div class="intro__half intro__half--bot">${stage}</div><div class="intro__seam"></div><div class="intro__flash"></div><button class="intro__skip" type="button" tabindex="0">Skip intro</button>`;
+  el.innerHTML = `<div class="intro__half intro__half--top">${stage}</div><div class="intro__half intro__half--bot">${stage}</div><div class="intro__seam"></div><div class="intro__flash"></div>`;
   (document.body || root).prepend(el);
   root.classList.add("intro-lock");
   setTimeout(() => { root.classList.remove("intro-lock"); root.classList.add("intro-done"); }, (HARD + 8) * 1000);   // failsafe
   if (reduce) el.classList.add("is-reduced");
 
   const tcs = () => el.querySelectorAll("[data-tc]");
-  const pcts = () => el.querySelectorAll("[data-pct]");
-  let hit = false, fast = false, target = 0, shown = 0, lastFrames = -1, last = performance.now();
+  let hit = false, target = 0, shown = 0, lastFrames = -1, last = performance.now();
   const t0 = last;
   const cls = (c) => el.classList.add(c);
-  const skipBtn = el.querySelector(".intro__skip");
-  skipBtn.addEventListener("click", () => { fast = true; });
-  setTimeout(() => skipBtn.classList.add("is-on"), 1400);
 
   function land() {
     hit = true;
     tcs().forEach((n) => (n.textContent = "00:00:24"));
-    pcts().forEach((n) => (n.textContent = "100"));
     el.style.setProperty("--p", 1);
     cls("is-hit");                                   // the late frame lands
-    const hold = fast ? 200 : reduce ? 500 : 900;
+    const hold = reduce ? 500 : 900;
     setTimeout(() => cls("is-seam"), hold);
     setTimeout(() => {
       cls("is-exit");
@@ -147,10 +141,9 @@
       lastFrames = frames;
       tcs().forEach((n) => (n.textContent = "00:00:" + pad(frames)));
     }
-    pcts().forEach((n) => (n.textContent = String(Math.min(99, Math.round(p * 100)))));
 
     const ready = (allDone() && shown > 0.985) || elapsed > HARD;
-    if (fast || (ready && elapsed >= MIN)) { land(); return; }   // stop updating: the timecode stays on 00:00:24
+    if (ready && elapsed >= MIN) { land(); return; }   // stop updating: the timecode stays on 00:00:24
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);

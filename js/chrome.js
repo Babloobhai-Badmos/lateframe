@@ -114,12 +114,12 @@
         <div class="footer__marq" aria-hidden="true"><div class="partner-marq__row">${marqSet}${marqSet}${marqSet}${marqSet}</div></div>
         <div class="footer__center">
           <div class="footer__invite" data-invite>
-            <div class="footer__sig" aria-hidden="true">${SITE.name}</div>
+            <div class="footer__sig" aria-hidden="true">${SITE.brand}</div>
             <h2 class="display footer__headline">${cta.headline.map((l) => `<span>${l}</span>`).join("")}</h2>
             <a class="btn btn--yellow" href="${cta.cta.href}"><span>${cta.cta.label}</span></a>
           </div>
         </div>
-        <div class="footer__cutout" aria-hidden="true">${window.LF.camera ? window.LF.camera("foot") : ""}</div>
+        <div class="footer__cutout" aria-hidden="true"><img src="assets/camera/fx6.webp" alt="" width="1600" height="1408" loading="lazy" decoding="async"></div>
         <div class="footer__panel">
           <div class="footer__panel-in">
             <a class="footer__logo" href="index.html" aria-label="Home">${window.LF.logoSvg()}</a>
