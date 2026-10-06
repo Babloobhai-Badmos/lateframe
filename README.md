@@ -26,13 +26,13 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | Every frame is a decision | Auto-drifting, draggable rail of stills |
 | Footer | Glass nav panel, headline reveal, CTA, skills marquee, sound toggle, and a **second camera** (`assets/camera/fx6-lf.webp`) with the lf. mark on the lens |
 
-Other pages: **Edits**, **Instagram**, **Capabilities**, **About**, **Contact**, Privacy, Terms.
+Other pages: **Guild**, **Instagram**, **Capabilities**, **About**, **Contact**, Privacy, Terms.
 
 ## Motto
 
 **Frames that stay.** It sits on the left of the hero (with a short blurb and tags), in the footer panel, the page
 title and meta description. Change it in `index.html` (`.cam__motto`) and the `SITE.projectBy` label in `js/chrome.js`.
-The right of the hero is a live **Now playing** reel index — click a row to cut the monitor to that reel.
+The right of the hero is a **Guild card** (members from `js/guild.js`) linking to the Guild page; on phones it becomes a one-row pill under the camera. Click the monitor to cut to the next reel.
 
 ## Playable camera
 
@@ -93,7 +93,8 @@ photo, re-measure them. They switch off once you start scrolling into the screen
 6. **Copy** — About and legal pages are placeholder text. Colours/type: tokens in `:root` of
    `css/styles.css`. The logo artwork is `assets/brand/logo-lf.jpg` (also the social-share image —
    set an absolute URL in the `og:image` tag once deployed). Fonts (Big Shoulders Display, Inter, JetBrains Mono — SIL OFL) are self-hosted.
-7. **Contact form** — opens the visitor's email client; point `action` at a form service when you deploy.
+7. **Contact page** — WhatsApp, email, phone and Google Form cards come from `SITE.contact` in `js/chrome.js` (set `embedForm: true` to also show the form inline).
+8. **Guild** — members live in `js/guild.js` (`LF.GUILD`); portraits go in `assets/guild/`. Privacy and Terms are written in the name of `SITE.owner`.
 
 Scroll choreography is one `requestAnimationFrame` loop in `js/home.js` that reads each pinned
 section's progress and writes CSS variables. `prefers-reduced-motion` is respected.

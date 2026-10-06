@@ -55,7 +55,7 @@
     tc: $("[data-tc]"), scrin: $("[data-scrin]"), set: $("[data-set]"), wb: $("[data-wb]"), meters: $("[data-meters]"), menu: $("[data-menu]"), menuList: $("[data-menu-list]"), hot: $("[data-hot]"), lensglow: $("[data-lensglow]"), reelsBox: $("[data-reels]"), tcPage: $("[data-tc-page]"), now: $("[data-now]"), title: $("[data-title]"), idx: $("[data-idx]"), flash: $("[data-flash]"), pin: $("[data-pin]"), big: $("[data-big]"), bigTag: $("[data-bigtag]"),
   };
   let ZOOM = 9, S = 1;
-  let indexEl = null, fc = 0, lastFlash = "", lastFade = -1, lastHint = -1;
+  let fc = 0, lastFlash = "", lastFade = -1, lastHint = -1;
   const fadeEls = [$(".cam__ui-page"), $(".cam__sides"), $(".cam__bgword")].filter(Boolean);
   const hintEls = [...host.querySelectorAll(".cam__hud-bot span:nth-child(-n+2)")];
 
@@ -111,9 +111,7 @@
       el.big.textContent = e.title || "";
       el.now.textContent = `Now playing — Reel ${p2(idx + 1)} · ${(e.title || "").toUpperCase()}`;
       el.bigTag.textContent = e.tag || "";
-      if (indexEl) [...indexEl.children].forEach((li, i) => li.classList.toggle("is-on", i === idx));
     }
-    if (indexEl && indexEl.children[idx]) indexEl.children[idx].style.setProperty("--p", (local / CUT).toFixed(3));
     if ((fc++ & 3) === 0) reels[idx].style.setProperty("--kb", (1.08 - 0.08 * sine(seg(local, 0, CUT))).toFixed(3));   // slow push: ~15 updates/s is plenty
     const fl = local < 0.4 ? ((1 - outCubic(seg(local, 0, 0.35))) * 0.85).toFixed(3) : "0";
     if (fl !== lastFlash) { lastFlash = fl; el.flash.style.opacity = fl; }
@@ -189,12 +187,6 @@
   el.mon.addEventListener("click", (e) => { if (e.target.closest(".cam__menu")) return; nextReel(); });
   el.mon.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); nextReel(); } });
   addEventListener("keydown", (e) => e.key === "Escape" && menuOpen && toggleMenu(false));
-  // reel index on the right-hand side of the hero
-  indexEl = document.querySelector("[data-index]");
-  if (indexEl) {
-    indexEl.innerHTML = EDITS.map((e, i) => `<li><button type="button" data-i="${i}"><span class="cam__ix-n">${p2(i + 1)}</span><span class="cam__ix-t">${e.title}</span><span class="cam__ix-a">${e.ar === "v" ? "9:16" : "16:9"}</span><i class="cam__ix-bar"></i></button></li>`).join("");
-    indexEl.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) jump(+b.dataset.i); });
-  }
   buildMenu(); paintSettings(); paintTc();
 
   layout();

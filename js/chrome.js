@@ -10,10 +10,20 @@
     name: "lateframe",
     legalName: "lateframe",
     role: "Video editor",
-    email: "hello@example.com", // ← your contact email
+    owner: "Devansh Sharma",   // named in the Privacy + Terms pages and on the Guild page
+    /* Contact page — fill these four in (leave one empty "" to hide its card) */
+    contact: {
+      whatsapp: "910000000000",                    // ← WhatsApp number: country code + number, digits only (91 = India)
+      whatsappText: "Hi lateframe — I'd like to talk about a project.",
+      email: "hello@example.com",                  // ← your email
+      phone: "+91 00000 00000",                    // ← phone number, as you want it shown
+      form: "https://forms.gle/your-form-id",      // ← your Google Form link
+      embedForm: false,                            // true = also show the form inline on the contact page
+    },
+    email: "hello@example.com", // ← keep in sync with contact.email
     nav: [
       { label: "Home", href: "index.html" },
-      { label: "Edits", href: "edits.html" },
+      { label: "Guild", href: "guild.html" },
       { label: "Instagram", href: "instagram.html" },
       { label: "Capabilities", href: "capabilities.html" },
       { label: "About", href: "about.html" },
@@ -35,11 +45,11 @@
     /* Footer call-to-action per page (data-footer on <body>) */
     footerCtas: {
       home: { headline: ["Let's cut", "something together"], cta: { label: "Get in touch", href: "contact.html" } },
-      edits: { headline: ["Like what", "you see?"], cta: { label: "Get in touch", href: "contact.html" } },
-      instagram: { headline: ["See the full", "cut on the feed"], cta: { label: "Edits", href: "edits.html" } },
+      guild: { headline: ["Join the", "guild"], cta: { label: "Get in touch", href: "contact.html" } },
+      instagram: { headline: ["See the full", "cut on the feed"], cta: { label: "Guild", href: "guild.html" } },
       capabilities: { headline: ["Have a project", "in mind?"], cta: { label: "Get in touch", href: "contact.html" } },
       about: { headline: ["Let's cut", "something together"], cta: { label: "Get in touch", href: "contact.html" } },
-      contact: { headline: ["Every frame", "is a decision"], cta: { label: "See the edits", href: "edits.html" } },
+      contact: { headline: ["Every frame", "is a decision"], cta: { label: "Meet the guild", href: "guild.html" } },
     },
   };
   window.SITE = SITE;
@@ -144,6 +154,32 @@
     new IntersectionObserver((es) => es.forEach((e) => invite.classList.toggle("is-on", e.isIntersecting && e.intersectionRatio > 0.2)), { threshold: [0, 0.2, 0.5] })
       .observe(document.querySelector("footer.footer"));
   } else if (invite) invite.classList.add("is-on");
+
+  /* Legal pages: [data-mail] always shows the email set in SITE.contact */
+  document.querySelectorAll("[data-mail]").forEach((a) => { a.href = "mailto:" + SITE.contact.email; a.textContent = SITE.contact.email; });
+
+  /* Scroll reveal for inner-page content ([data-reveal]) — LF.reveal(root) also covers content a page script adds later */
+  const rio = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-in"); rio.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px", threshold: 0.05 }) : null;
+  window.LF.reveal = (scope = document) => {
+    [...scope.querySelectorAll("[data-reveal], .legal h2, .ccard")].forEach((n, i) => {
+      if (n.dataset.revealed) return;
+      n.dataset.revealed = "1"; n.setAttribute("data-reveal", ""); n.style.transitionDelay = (i % 4) * 70 + "ms";
+      rio ? rio.observe(n) : n.classList.add("is-in");
+    });
+  };
+  window.LF.reveal();
+
+  /* Warm the next page on hover / touch so navigation feels instant */
+  const warmed = new Set();
+  const warm = (e) => {
+    const a = e.target.closest && e.target.closest("a[href]");
+    if (!a || a.target === "_blank" || a.origin !== location.origin || warmed.has(a.pathname) || a.pathname === location.pathname) return;
+    if (navigator.connection && navigator.connection.saveData) return;
+    warmed.add(a.pathname);
+    const l = document.createElement("link"); l.rel = "prefetch"; l.href = a.href; document.head.appendChild(l);
+  };
+  document.addEventListener("pointerover", warm, { passive: true });
+  document.addEventListener("touchstart", warm, { passive: true });
 
   /* Sound toggle (UI only — wire to your own audio) */
   const sound = document.querySelector("[data-sound]");

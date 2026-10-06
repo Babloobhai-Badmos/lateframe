@@ -210,11 +210,11 @@
 
   /* ---------- Make a play rail ---------- */
   const PLAY = [
-    ["Cold open", "edits.html", 44], ["Whip pan", "edits.html", 54], ["Match cut", "edits.html", 48],
-    ["Speed ramp", "edits.html", 56], ["Beat drop", "instagram.html", 46], ["Color pass", "capabilities.html", 48],
-    ["Kinetic type", "capabilities.html", 42], ["Hard cut", "edits.html", 50], ["Slow burn", "instagram.html", 44],
-    ["Jump cut", "edits.html", 54], ["Light leak", "capabilities.html", 48], ["Freeze frame", "edits.html", 56],
-    ["Glitch", "capabilities.html", 46], ["Fade to black", "instagram.html", 48], ["Split screen", "edits.html", 42], ["Final export", "contact.html", 50],
+    ["Cold open", "instagram.html", 44], ["Whip pan", "instagram.html", 54], ["Match cut", "instagram.html", 48],
+    ["Speed ramp", "instagram.html", 56], ["Beat drop", "instagram.html", 46], ["Color pass", "capabilities.html", 48],
+    ["Kinetic type", "capabilities.html", 42], ["Hard cut", "instagram.html", 50], ["Slow burn", "instagram.html", 44],
+    ["Jump cut", "instagram.html", 54], ["Light leak", "capabilities.html", 48], ["Freeze frame", "instagram.html", 56],
+    ["Glitch", "capabilities.html", 46], ["Fade to black", "instagram.html", 48], ["Split screen", "instagram.html", 42], ["Final export", "contact.html", 50],
   ];
   const YS = [6, -4, 7, 1, 8, 3, -5, 6], RS = [-3, 2, -2, 3, -3, 2, -2, 3];
   const playRow = $("[data-play-row]");

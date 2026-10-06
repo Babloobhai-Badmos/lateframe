@@ -14,6 +14,7 @@
   <meta name="twitter:image" content="assets/brand/logo-lf.jpg">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/camera/fx6.webp" as="image" type="image/webp">
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/intro.css">
@@ -66,7 +67,7 @@
         <div class="cam__hud-bot"><span>Scroll ↓</span><span>Try the lens · REC · dials</span><span data-now></span></div>
       </div>
 
-      <!-- left / right of the camera: motto + reel index -->
+      <!-- left / right of the camera: motto + the Guild card -->
       <div class="cam__sides">
         <aside class="cam__side cam__side--l" aria-label="lateframe">
           <p class="cam__eyebrow"><i></i>Our motto</p>
@@ -74,9 +75,8 @@
           <p class="cam__blurb">Edits you feel long after the scroll. Pacing, color and sound — built to be remembered.</p>
           <ul class="cam__tags"><li>Reels</li><li>Color</li><li>Motion</li><li>Sound</li></ul>
         </aside>
-        <aside class="cam__side cam__side--r" aria-label="Reel index">
-          <p class="cam__eyebrow"><i></i>Now playing</p>
-          <ol class="cam__index" data-index></ol>
+        <aside class="cam__side cam__side--r" aria-label="The Guild">
+          <div data-guild-card></div>
           <a class="cam__avail" href="contact.html"><span class="cam__dot"></span>Booking projects <em>→</em></a>
         </aside>
         <p class="cam__motto-m display">Frames that stay<b>.</b></p>
@@ -185,6 +185,7 @@
 <div data-chrome="footer"></div>
 
 <script src="js/edits.js"></script>
+<script src="js/guild.js"></script>
 <script src="js/chrome.js"></script>
 <script src="js/camera.js"></script>
 <script src="js/home.js"></script>
