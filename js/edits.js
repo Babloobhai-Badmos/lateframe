@@ -24,7 +24,7 @@
      The transformations trim to 3 s, drop audio, resize and compress — Cloudinary
      does it from your original upload, so upload the full-quality file. */
   window.LF.CLOUDINARY = {
-    cloud: "your-cloud-name",
+    cloud: "mdoueimq",
     horizontal: "f_mp4,vc_h264,q_auto:eco,so_0,du_3,ac_none,w_1280,h_720,c_fill",
     vertical: "f_mp4,vc_h264,q_auto:eco,so_0,du_3,ac_none,w_720,h_1280,c_fill",
   };
