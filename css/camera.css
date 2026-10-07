@@ -6,7 +6,7 @@
 .cam__pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; --fade: 1; --hint: 1; --zt: 0; }
 
 /* white, pebbled "ball" leather with soft L-shaped tonal blocks */
-.cam__bg { position: absolute; inset: 0; background-color: #f6f3ee; background-image: linear-gradient(rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.46)), url("../assets/textures/leather.jpg"); background-size: auto, 360px; }
+.cam__bg { position: absolute; inset: 0; background-color: #f6f3ee; background-image: linear-gradient(rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.46)), url("../assets/textures/leather.webp"); background-size: auto, 360px; }
 .cam__blocks { position: absolute; inset: -4vh -4vw; pointer-events: none; }
 .cam__blocks i { position: absolute; }
 .cam__blocks i:nth-child(1) { left: 0; top: 0; width: 46vw; height: 74vh; background: rgba(176, 160, 146, 0.20); clip-path: polygon(0 0, 100% 0, 100% 34%, 40% 34%, 40% 100%, 0 100%); }

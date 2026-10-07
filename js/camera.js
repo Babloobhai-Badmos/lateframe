@@ -37,7 +37,7 @@
   const N = EDITS.length || 1;
   const LOOP = N * CUT;
 
-  if (window.LF.preload) { LF.preload("assets/camera/fx6.webp", "image"); LF.preload("assets/textures/leather.jpg", "image"); }
+  if (window.LF.preload) { LF.preload("assets/camera/fx6.webp", "image"); LF.preload("assets/textures/leather.webp", "image"); }
 
   /* ---------- build the reels that play on the monitor ---------- */
   const reelsEl = $("[data-reels]");

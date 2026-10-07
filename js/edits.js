@@ -6,9 +6,11 @@
 
      title / tag : shown on screen
      ar          : "h" (16:9) or "v" (9:16 — pillarboxed on the monitor)
-     video       : mp4 that plays on the monitor + modal   (optional)
-     image       : poster still                              (optional)
-     link        : the reel's Instagram URL                  (optional)
+     image       : poster still, e.g. assets/reels/01.webp (540×960, ~25 KB)
+     link        : the reel's Instagram / YouTube / Vimeo URL — the modal embeds it
+                   when you press play, so NO video file has to be hosted on the site
+     video       : (optional, avoid) a direct mp4 URL — only if hosted off-site (CDN / Vercel Blob);
+                   never commit mp4s to this repo
      hue         : colour of the placeholder art (0–360)
      dy/dur/delay: float offset + animation timing of the floating card
    ========================================================================== */

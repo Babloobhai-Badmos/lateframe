@@ -88,7 +88,7 @@ photo, re-measure them. They switch off once you start scrolling into the screen
    `<div class="ph" data-src="assets/img/photo.webp"></div>`
 4. **Hero camera** — `assets/camera/fx6.webp` (a transparent cut-out). To use a different camera, swap the image
    and re-measure where its flip-out monitor sits (`MON` / `SCR` constants at the top of `js/camera.js`).
-   The white pebbled-leather background is `assets/textures/leather.jpg` (tiles seamlessly).
+   The white pebbled-leather background is `assets/textures/leather.webp` (tiles seamlessly).
 5. **Capabilities** — the six services are in `BRANDS` in `js/home.js` and in `capabilities.html`.
 6. **Copy** — About and legal pages are placeholder text. Colours/type: tokens in `:root` of
    `css/styles.css`. The logo artwork is `assets/brand/logo-lf.jpg` (also the social-share image —
@@ -115,3 +115,13 @@ Scroll animation is deliberately cheap — keep it that way when adding to it:
 
 `assets/camera/fx6-lf.webp` was cut out of the supplied render (GrabCut), the original "L.F" text was inpainted away
 and the traced lf. logo composited onto the lens; the cropped left edge is faded out.
+
+## Deploying on Vercel (static, no build step)
+
+1. Push the repo, then **Add New → Project → import it**. Framework preset: **Other**; leave build command and output directory empty.
+2. `vercel.json` sets long caching for fonts, week-long caching for images and short caching for JS/CSS, plus basic security headers. `.vercelignore` keeps the docs out of the deployment.
+3. Total weight today: about **0.97 MB** on disk; the home page transfers about **0.8 MB** uncompressed when fully scrolled (Vercel serves Brotli, so roughly 0.45 MB on the wire).
+4. Keep it small:
+   - no video files — use `link` + a poster (see `CONTENT.md`);
+   - images as WebP, sized for how they're shown (a portrait that's displayed 550px wide doesn't need to be 5000px);
+   - set the `og:image` / `twitter:image` in `index.html` to an **absolute** URL once you have your domain (`https://your-domain.com/assets/brand/logo-lf.jpg`) — social previews ignore relative paths.

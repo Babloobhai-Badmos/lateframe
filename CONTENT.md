@@ -26,6 +26,18 @@ Everything below is a placeholder today. Nothing needs a code change except the 
 | Capability visuals | `data-src` on the `.pslide__pol .ph` in `index.html` | 1000×1250 | Capabilities wipe on the home page and Capabilities page |
 | Social preview | `assets/brand/logo-lf.jpg` | 1200×630 | Link previews (WhatsApp / Instagram / X) |
 
-## Reels (video) — `js/edits.js`
+## Reels — no video files on the site
 
-Each of the five reels takes: `video:` (MP4, H.264, 1080p, under ~8 MB, muted, loops), `image:` (poster), `link:` (the reel's Instagram URL). One entry feeds three places: the camera monitor, the floating cards in "Selected Edits", and the modal ("Watch on Instagram" uses `link`).
+Never commit `.mp4` files. Each reel is just three small things in `js/edits.js`:
+
+| Field | What | Weight |
+|---|---|---|
+| `image` | Poster still, 540×960 WebP (`assets/reels/01.webp`) | ~25 KB each |
+| `link` | The reel's Instagram / YouTube Shorts / Vimeo URL | 0 |
+| `title`, `tag` | Text | 0 |
+
+- In the modal, pressing **play** loads Instagram / YouTube / Vimeo's own player (nothing third-party loads before that).
+- The camera monitor and the floating cards use the poster, with a slow push-in, so they still feel alive.
+- Want real motion on the monitor? Host a short muted loop *off-site* (Vercel Blob, Cloudinary, Bunny) and paste its URL into `video:`. It never counts against the deployment.
+
+Make posters smaller: `convert frame.png -resize 540x960^ -gravity center -extent 540x960 -quality 72 -define webp:method=6 assets/reels/01.webp`

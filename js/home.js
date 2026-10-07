@@ -44,7 +44,7 @@
   }
   $$(".ph[data-src]").forEach((el) => (el.style.backgroundImage = `url("${el.dataset.src}")`));
   // Let the intro wait for the reel posters / previews before it reveals the site
-  EDITS.forEach((e, i) => { LF.preload && LF.preload(e.image, "image"); LF.preload && LF.preload(e.video, "video"); });
+  EDITS.forEach((e) => LF.preload && LF.preload(e.image, "image"));   // posters only — the intro never waits on video
 
 
   /* ---------- 3D tilt for reel cards ---------- */
@@ -75,6 +75,27 @@
   /* ---------- Reel modal ---------- */
   const modal = $("[data-modal]");
   const mVideo = $("[data-modal-video]");
+  const mEmbed = $("[data-modal-embed]");
+  const mPlay = $("[data-modal-play]");
+  /* A reel's Instagram / YouTube / Vimeo link becomes an embed that only loads when you press play —
+     so no video file ever ships with the site (and nothing third-party loads until asked). */
+  const embedUrl = (u) => {
+    let m;
+    if (!u) return null;
+    if ((m = u.match(/instagram\.com\/(?:[\w.]+\/)?(reels?|p|tv)\/([\w-]+)/i))) return `https://www.instagram.com/${m[1] === "tv" ? "tv" : m[1] === "p" ? "p" : "reel"}/${m[2]}/embed`;
+    if ((m = u.match(/(?:youtube\.com\/(?:shorts\/|embed\/|watch\?(?:.*&)?v=)|youtu\.be\/)([\w-]{6,})/i))) return `https://www.youtube-nocookie.com/embed/${m[1]}?autoplay=1&rel=0&playsinline=1`;
+    if ((m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/i))) return `https://player.vimeo.com/video/${m[1]}?autoplay=1`;
+    return null;
+  };
+  let embedSrc = null;
+  const clearEmbed = () => { mEmbed.replaceChildren(); mEmbed.hidden = true; };
+  mPlay.addEventListener("click", () => {
+    if (!embedSrc) return;
+    const f = document.createElement("iframe");
+    f.src = embedSrc; f.title = "Reel"; f.loading = "lazy"; f.referrerPolicy = "strict-origin-when-cross-origin";
+    f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen"; f.allowFullscreen = true;
+    mEmbed.replaceChildren(f); mEmbed.hidden = false; mPlay.hidden = true;
+  });
   let lastFocus = null;
   function openModal(i) {
     const e = EDITS[i] || EDITS[0];
@@ -87,6 +108,9 @@
     $("[data-modal-title]").textContent = e.title;
     $("[data-modal-stat]").textContent = e.tag;
     $("[data-modal-link]").href = e.link || igUrl;
+    clearEmbed();
+    embedSrc = embedUrl(e.link);
+    mPlay.hidden = !embedSrc || !!e.video;
     if (e.video) { mVideo.src = e.video; mVideo.hidden = false; mVideo.play().catch(() => {}); }
     else { mVideo.hidden = true; mVideo.removeAttribute("src"); }
     modal.classList.add("is-open");
@@ -97,6 +121,7 @@
   }
   function closeModal() {
     mVideo.pause();
+    clearEmbed();
     modal.classList.remove("is-open");
     modal.setAttribute("inert", "");
     modal.setAttribute("aria-hidden", "true");
