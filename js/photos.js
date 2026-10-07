@@ -12,8 +12,10 @@
      play-1  … play-16   the photo cards in "Every frame is a decision"
 
    Instagram can't be asked for a reel's thumbnail by another website, so each
-   tile below needs its own picture — either an uploaded image, or `clip:` = the
-   Public ID of the reel's video on Cloudinary (a frame is cut from it).
+   tile below needs its own picture — either an uploaded image (`img:`), or
+   `clip:` = the Public ID of the reel's video on Cloudinary. With `clip:` the tile
+   shows a frame at first, then PLAYS the 3-second loop on the Instagram page
+   (the same clip the camera monitor already downloaded — no extra download).
    ========================================================================== */
 (function () {
   "use strict";
@@ -47,10 +49,34 @@
       : `${base}/image/upload/f_auto,q_auto,w_${w},c_limit/${img}`;
   }
 
+  /* clip tiles play only while they're on screen */
+  const vio = "IntersectionObserver" in window
+    ? new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? e.target.play().catch(() => {}) : e.target.pause())), { threshold: 0.2 })
+    : null;
+  function attachClip(el, clip) {
+    // same URL as the camera monitor uses for this reel → same cached download
+    const edit = (LF.EDITS || []).find((e) => e.clip === clip) || { clip, ar: "v" };
+    const url = LF.clipUrl && LF.clipUrl(edit);
+    if (!url || !LF.clip) return;
+    LF.clip(url).then((src) => {
+      if (!src) return;
+      const v = document.createElement("video");
+      v.className = "ph__vid"; v.muted = true; v.loop = true; v.playsInline = true; v.preload = "auto";
+      v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("aria-hidden", "true");
+      v.addEventListener("playing", () => v.classList.add("is-ready"), { once: true });
+      v.src = src;
+      el.appendChild(v);
+      vio ? vio.observe(v) : v.play().catch(() => {});
+    });
+  }
+  const playsClips = document.body.dataset.page === "instagram";   // the home strip keeps stills (lighter scroll)
+
   /* fill one placeholder; if the image doesn't exist (yet) the gradient stays */
   function fill(el) {
     const url = urlFor(el.dataset.photo, +el.dataset.w || 700);
     if (!url) return;
+    const m = el.dataset.photo.match(/^feed-(\d+)$/), f = m && LF.FEED[m[1] - 1];
+    if (playsClips && f && f.clip) attachClip(el, f.clip);
     const im = new Image();
     im.decoding = "async";
     im.onload = () => { el.style.backgroundImage = `url("${url}")`; el.setAttribute("data-src", url); el.classList.add("is-photo"); };
