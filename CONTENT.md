@@ -28,6 +28,11 @@ Upload each image to Cloudinary (root folder) and set its **Public ID** to the n
 
 Other pictures that stay in the repo: Devansh's portrait (`assets/guild/devansh.webp`) and the social preview image (`assets/brand/logo-lf.jpg`).
 
+### A photo doesn't show up?
+Add `?photos` to the page address (e.g. `https://your-site.com/?photos`). A panel lists every picture that failed and Cloudinary's answer:
+- **HTTP 404** → no image has that Public ID. In Cloudinary open the asset: the **Public ID** shown there must be exactly `frame-1` (no folder, no `_xxxxx` suffix, no `.jpg`). Either rename it, or map it without renaming in `js/photos.js`: `LF.PHOTO_IDS = { "frame-1": "frame-1_x7k2q" }`.
+- **HTTP 401 / 403** → Cloudinary is refusing the request: Settings → Security → turn off **Strict transformations**, and make sure the image is public (upload type "upload", not "private"/"authenticated"). The site already retries without resizing.
+
 ### Instagram tiles: link + thumbnail
 Instagram doesn't let other sites fetch a reel's thumbnail from its link, so each tile needs its own picture. Edit the list `LF.FEED` at the top of `js/photos.js`:
 
