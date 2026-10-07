@@ -26,18 +26,24 @@ Everything below is a placeholder today. Nothing needs a code change except the 
 | Capability visuals | `data-src` on the `.pslide__pol .ph` in `index.html` | 1000×1250 | Capabilities wipe on the home page and Capabilities page |
 | Social preview | `assets/brand/logo-lf.jpg` | 1200×630 | Link previews (WhatsApp / Instagram / X) |
 
-## Reels — no video files on the site
+## Reels — 3-second clips from Cloudinary, downloaded once
 
-Never commit `.mp4` files. Each reel is just three small things in `js/edits.js`:
+Never commit `.mp4` files. Each reel in `js/edits.js` has:
 
 | Field | What | Weight |
 |---|---|---|
-| `image` | Poster still, 540×960 WebP (`assets/reels/01.webp`) | ~25 KB each |
-| `link` | The reel's Instagram / YouTube Shorts / Vimeo URL | 0 |
-| `title`, `tag` | Text | 0 |
+| `clip` | The Cloudinary **public ID** of the reel (`reel-01` … `reel-05`) | 0 in the repo |
+| `image` | Poster still, 540×960 WebP (`assets/reels/01.webp`) — shown until the clip is ready, and for visitors on Data Saver / reduced-motion | ~25 KB each |
+| `link` | The reel's Instagram / YouTube Shorts / Vimeo URL — the pop-up embeds it when you press play | 0 |
 
-- In the modal, pressing **play** loads Instagram / YouTube / Vimeo's own player (nothing third-party loads before that).
-- The camera monitor and the floating cards use the poster, with a slow push-in, so they still feel alive.
-- Want real motion on the monitor? Host a short muted loop *off-site* (Vercel Blob, Cloudinary, Bunny) and paste its URL into `video:`. It never counts against the deployment.
+**One-time Cloudinary setup**
+1. Create a free Cloudinary account and copy the **cloud name** (top-left of the dashboard) into `LF.CLOUDINARY.cloud` in `js/edits.js`.
+2. Upload the five full-quality originals to the Media Library and set their public IDs to `reel-01` … `reel-05` (Cloudinary then makes a 3-second, silent, compressed copy on the fly — your original is never touched). To use a different 3 seconds, change `so_0` (start offset in seconds) in the transformation.
+3. Open each of the five URLs once in a browser to warm them (the first request makes Cloudinary transcode the file):
+   `https://res.cloudinary.com/<cloud>/video/upload/f_mp4,vc_h264,q_auto:eco,so_0,du_3,ac_none,w_720,h_1280,c_fill/reel-02.mp4`
 
-Make posters smaller: `convert frame.png -resize 540x960^ -gravity center -extent 540x960 -quality 72 -define webp:method=6 assets/reels/01.webp`
+**What the visitor's device does**
+- Each clip is downloaded **once**, saved in the browser's Cache Storage, and played from a local `blob:` URL — so every loop, and every later visit, costs **zero** network and zero Cloudinary bandwidth.
+- The intro waits only for the first clip (about 0.3–0.6 MB); the other four load right after.
+- Expected weight: about 0.3–0.7 MB per clip, so about 2–3 MB **once per device**. On Cloudinary's free plan (25 credits ≈ 25 GB of video bandwidth a month) that is roughly 8,000+ new devices a month.
+- Swapping a clip: change its public ID or transformation → the URL changes → the device fetches the new one and drops the old.

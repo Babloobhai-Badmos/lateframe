@@ -43,12 +43,31 @@
   const reelsEl = $("[data-reels]");
   const art = (e, cls) => {
     const style = e.image ? `background-image:url('${e.image}')` : `--h:${e.hue}`;
-    const body = e.video ? `<video src="${e.video}" muted playsinline loop preload="auto"></video>` : e.image ? "" : `<span class="cam__art-no">REEL ${p2(EDITS.indexOf(e) + 1)}</span><span class="cam__art-h">${e.ar === "v" ? "9:16" : "16:9"} · drop video</span>`;
+    const body = e.image ? "" : `<span class="cam__art-no">REEL ${p2(EDITS.indexOf(e) + 1)}</span><span class="cam__art-h">${e.ar === "v" ? "9:16" : "16:9"} · drop video</span>`;
     return `<div class="cam__art ${cls}" style="${style}">${body}</div>`;
   };
   reelsEl.innerHTML = EDITS.map((e) => `<div class="cam__reel cam__reel--${e.ar === "v" ? "v" : "h"}"><div class="cam__reel-in">${e.ar === "v" ? art(e, "cam__art--blur") : ""}${art(e, "cam__art--main")}</div></div>`).join("");
   const reels = [...reelsEl.children];
-  const vids = reels.map((r) => r.querySelector("video.cam__vid, video"));
+  const vids = reels.map(() => null);
+
+  /* clips: each is fetched once (Cloudinary → Cache Storage → blob URL) and loops from memory */
+  if (window.LF.clip && LF.clipUrl) {
+    const urls = EDITS.map((e) => LF.clipUrl(e));
+    const first = urls.findIndex(Boolean);
+    if (first >= 0 && LF.waitFor) LF.waitFor(LF.clip(urls[first]));        // the intro waits for the first clip only
+    urls.forEach((u, i) => u && LF.clip(u).then((src) => {
+      if (!src) return;
+      const v = document.createElement("video");
+      v.muted = true; v.loop = true; v.playsInline = true; v.preload = "auto";
+      v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("aria-hidden", "true");
+      v.addEventListener("playing", () => v.classList.add("is-ready"), { once: true });
+      v.src = src;
+      reels[i].querySelector(".cam__art--main").appendChild(v);
+      vids[i] = v;
+      if (reels[i].classList.contains("is-on") && visible) v.play().catch(() => {});
+    }));
+    Promise.all(urls.filter(Boolean).map((u) => LF.clip(u))).then(() => LF.clipsPrune && LF.clipsPrune(urls.filter(Boolean)));
+  }
 
   const el = {
     stage: $("[data-stage-el]"), zoom: $("[data-zoom]"), rig: $("[data-rig]"), mon: $("[data-mon]"), shadow: $("[data-shadow]"),
@@ -191,6 +210,6 @@
 
   layout();
   addEventListener("resize", layout);
-  if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => (visible = e.isIntersecting), { rootMargin: "100px" }).observe(host);
+  if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => { visible = e.isIntersecting; const v = vids[lastReel]; if (v) visible ? v.play().catch(() => {}) : v.pause(); }, { rootMargin: "100px" }).observe(host);
   requestAnimationFrame(frame);
 })();

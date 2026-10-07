@@ -122,6 +122,6 @@ and the traced lf. logo composited onto the lens; the cropped left edge is faded
 2. `vercel.json` sets long caching for fonts, week-long caching for images and short caching for JS/CSS, plus basic security headers. `.vercelignore` keeps the docs out of the deployment.
 3. Total weight today: about **0.97 MB** on disk; the home page transfers about **0.8 MB** uncompressed when fully scrolled (Vercel serves Brotli, so roughly 0.45 MB on the wire).
 4. Keep it small:
-   - no video files — use `link` + a poster (see `CONTENT.md`);
+   - no video files in the repo — reels are 3-second Cloudinary clips fetched once and cached on the device, plus `link` + a poster (see `CONTENT.md`);
    - images as WebP, sized for how they're shown (a portrait that's displayed 550px wide doesn't need to be 5000px);
    - set the `og:image` / `twitter:image` in `index.html` to an **absolute** URL once you have your domain (`https://your-domain.com/assets/brand/logo-lf.jpg`) — social previews ignore relative paths.

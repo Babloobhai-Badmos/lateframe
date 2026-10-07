@@ -94,6 +94,7 @@
     const f = document.createElement("iframe");
     f.src = embedSrc; f.title = "Reel"; f.loading = "lazy"; f.referrerPolicy = "strict-origin-when-cross-origin";
     f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen"; f.allowFullscreen = true;
+    mVideo.pause(); mVideo.hidden = true;
     mEmbed.replaceChildren(f); mEmbed.hidden = false; mPlay.hidden = true;
   });
   let lastFocus = null;
@@ -110,9 +111,15 @@
     $("[data-modal-link]").href = e.link || igUrl;
     clearEmbed();
     embedSrc = embedUrl(e.link);
-    mPlay.hidden = !embedSrc || !!e.video;
-    if (e.video) { mVideo.src = e.video; mVideo.hidden = false; mVideo.play().catch(() => {}); }
-    else { mVideo.hidden = true; mVideo.removeAttribute("src"); }
+    mPlay.hidden = !embedSrc;
+    mVideo.hidden = true; mVideo.removeAttribute("src");
+    modal.dataset.i = i;
+    /* the reel's clip loops behind the play button — it's already on the device, so no extra download */
+    const clipUrl = LF.clipUrl && LF.clipUrl(e);
+    if (clipUrl) LF.clip(clipUrl).then((src) => {
+      if (!src || !modal.classList.contains("is-open") || modal.dataset.i !== String(i)) return;
+      mVideo.src = src; mVideo.hidden = false; mVideo.play().catch(() => {});
+    });
     modal.classList.add("is-open");
     modal.removeAttribute("inert");
     modal.setAttribute("aria-hidden", "false");

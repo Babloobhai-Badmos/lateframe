@@ -43,7 +43,8 @@ html.js:not(.intro-done) .cam__stage, html.js:not(.intro-done) .cam__bgword { op
     radial-gradient(90% 80% at 4% 100%, hsl(calc(var(--h) + 40) 72% 32% / 0.9), transparent 70%),
     linear-gradient(160deg, hsl(var(--h) 55% 22%), hsl(calc(var(--h) + 30) 60% 7%));
 }
-.cam__art video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cam__art video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s; }
+.cam__art video.is-ready { opacity: 1; }
 .cam__art-no { font: 800 190px/1 var(--font-display); letter-spacing: 0.04em; text-transform: uppercase; color: rgba(255, 255, 255, 0.9); }
 .cam__art-h { font: 400 34px var(--font-mono); letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6); }
 .cam__reel--v .cam__art--main { inset: 0 auto 0 50%; width: 714px; margin-left: -357px; }

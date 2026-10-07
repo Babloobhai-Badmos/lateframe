@@ -23,6 +23,7 @@
   if (skip || !window.LF.logoSvg) {
     root.classList.add("intro-done");
     window.LF.preload = function () {};
+    window.LF.waitFor = function () {};
     return;
   }
 
@@ -61,6 +62,14 @@
       im.src = url; keep.push(im);
     }
     setTimeout(end, 10000);   // one slow file must never trap the visitor
+  };
+
+  /* hold the intro for any promise (e.g. the first reel clip) — never longer than 10 s */
+  window.LF.waitFor = function (p) {
+    const t = task(1);
+    const end = () => t.done();
+    Promise.resolve(p).then(end, end);
+    setTimeout(end, 10000);
   };
 
   document.addEventListener("readystatechange", () => document.readyState === "interactive" && parse.set(0.6));
