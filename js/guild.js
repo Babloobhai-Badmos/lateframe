@@ -46,17 +46,19 @@
      Three looks — set LF.GUILD_CARD, or preview any of them with  index.html?card=a | b | c
        a  Neon tube   — dark glass, glowing orange tube outline, flickering "GUILD" sign
        b  Aurora      — full-colour sunset gradient (the lf. logo palette) with a slow drift
-       c  Viewfinder  — cyan + magenta neon brackets, scanline and REC readout            */
-  LF.GUILD_CARD = "a";
+       c  Viewfinder  — cyan + magenta neon brackets, scanline and REC readout
+       d  Clear glass · e  Smoked glass · f  Amber glass — tall liquid-glass cards            */
+  LF.GUILD_CARD = "e";
   LF.GUILD_SIZE = "big";                      // big | compact | slim  (preview: ?size=compact)
   const qs = new URLSearchParams(location.search);
-  const look = /^[abc]$/.test(qs.get("card")) ? qs.get("card") : LF.GUILD_CARD;
+  const look = /^[a-f]$/.test(qs.get("card")) ? qs.get("card") : LF.GUILD_CARD;
+  const glass = /^[def]$/.test(look);            // d / e / f = tall liquid-glass cards
   const size = /^(big|compact|slim)$/.test(qs.get("size")) ? qs.get("size") : LF.GUILD_SIZE;
   document.querySelectorAll("[data-guild-card]").forEach((host) => {
     const lead = LF.GUILD.find((m) => m.lead) || LF.GUILD[0];
     const crew = LF.GUILD.filter((m) => m !== lead).slice(0, 4), more = LF.GUILD.length - 1 - crew.length;
     host.innerHTML = `
-      <a class="gcrd gcrd--${look}${size === "big" ? "" : " gcrd--" + size}" href="guild.html" aria-label="Meet the Guild">
+      <a class="gcrd gcrd--${look}${glass ? " gcrd--glass gcrd--tall" : size === "big" ? "" : " gcrd--" + size}" href="guild.html" aria-label="Meet the Guild">
         <span class="gcrd__fx" aria-hidden="true"><i></i><i></i></span>
         <span class="gcrd__head"><span class="gcrd__eyebrow"><i></i><span class="gcrd__sign">The Guild</span></span><span class="gcrd__count"><b class="gcrd__rec"></b>${String(LF.GUILD.length).padStart(2, "0")}</span></span>
         <span class="gcrd__stage">${portrait(lead, "av--card")}<span class="gcrd__who"><small>${esc(lead.role)}</small><strong>${esc(lead.name).replace(" ", " <br>")}</strong></span></span>

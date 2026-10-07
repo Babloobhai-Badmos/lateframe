@@ -249,6 +249,36 @@ html.intro-done .cam__spot::after { content: ""; position: absolute; inset: -10p
 .gcrd--slim .gcrd__who br { display: none; }
 .gcrd--slim .gcrd__foot { margin: 0; padding: 0; border: 0; }
 
+/* ---- d / e / f · tall liquid glass (soft corners, flush with the right edge) ---- */
+.gcrd--glass { --ink: #171614; color: var(--ink); border-radius: 30px 0 0 30px; border: 1px solid rgba(255, 255, 255, 0.75); border-right: 0; -webkit-backdrop-filter: blur(16px) saturate(1.8); backdrop-filter: blur(16px) saturate(1.8); }
+.gcrd--glass .gcrd__fx i:nth-child(1) { inset: 0; background: radial-gradient(120% 55% at 18% 0%, rgba(255, 255, 255, 0.75), transparent 60%), linear-gradient(90deg, rgba(255, 255, 255, 0.7), transparent 7%), linear-gradient(0deg, rgba(255, 255, 255, 0.35), transparent 14%); }
+.gcrd--glass .gcrd__fx i:nth-child(2) { inset: 0; background: radial-gradient(90% 45% at 20% 108%, rgba(255, 106, 40, 0.6), transparent 70%), radial-gradient(60% 30% at 100% 55%, rgba(255, 190, 120, 0.3), transparent 70%); }
+.gcrd--glass .gcrd__eyebrow, .gcrd--glass .gcrd__count { color: inherit; }
+.gcrd--glass .av--card { box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.85), 0 12px 26px -12px rgba(30, 14, 6, 0.55); }
+.gcrd--glass .gcrd__stage::after { display: none; }
+.gcrd--glass .gcrd__foot { border-top: 1px solid rgba(255, 255, 255, 0.5); }
+.gcrd--glass .gcrd__foot em { color: var(--accent); }
+.gcrd--d { background: linear-gradient(165deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.14) 45%, rgba(255, 255, 255, 0.3)); box-shadow: inset 0 1px 0 #fff, inset 2px 0 0 rgba(255, 138, 80, 0.95), inset 0 -12px 28px rgba(255, 255, 255, 0.25), 0 0 26px rgba(255, 106, 40, 0.38), 0 30px 60px -24px rgba(60, 30, 10, 0.4); }
+.gcrd--e { --ink: #fff2e6; border-color: rgba(255, 255, 255, 0.4); background: linear-gradient(165deg, rgba(30, 16, 12, 0.62), rgba(10, 6, 6, 0.42)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 2px 0 0 rgba(255, 138, 80, 0.95), 0 0 30px rgba(255, 106, 40, 0.5), 0 30px 60px -24px rgba(20, 8, 4, 0.6); }
+.gcrd--e .gcrd__fx i:nth-child(1) { opacity: 0.55; }
+.gcrd--e .gcrd__foot { border-top-color: rgba(255, 255, 255, 0.25); }
+.gcrd--f { --ink: #fff; background: linear-gradient(165deg, rgba(255, 178, 96, 0.6), rgba(255, 96, 44, 0.42) 55%, rgba(176, 19, 34, 0.5)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 2px 0 0 rgba(255, 255, 255, 0.75), 0 0 34px rgba(255, 106, 40, 0.55), 0 30px 60px -24px rgba(90, 20, 10, 0.55); }
+.gcrd--f .gcrd__foot em { color: #fff; }
+.cam.is-moving .gcrd--glass { -webkit-backdrop-filter: none; backdrop-filter: none; }
+.is-off .gcrd--glass { -webkit-backdrop-filter: none; backdrop-filter: none; }
+@media (min-width: 1180px) and (min-aspect-ratio: 13/10) {
+  .cam__side--r .gcrd.gcrd--tall { width: clamp(190px, 11.8vw, 228px); height: clamp(330px, 58vh, 590px); padding: 18px 16px 16px 16px; display: flex; flex-direction: column; }
+  .gcrd--tall .gcrd__head { margin-bottom: 12px; }
+  .gcrd--tall .gcrd__eyebrow > i { display: none; }
+  .gcrd--tall .gcrd__stage { flex: 1; display: flex; flex-direction: column; min-height: 0; gap: 12px; }
+  .gcrd--tall .av--card { flex: 1; width: 100%; aspect-ratio: auto; min-height: 0; border-radius: 20px; font-size: clamp(54px, 5vw, 90px); }
+  .gcrd--tall .gcrd__who { position: static; }
+  .gcrd--tall .gcrd__who strong { font-size: clamp(26px, 2.2vw, 40px); }
+  .gcrd--tall .gcrd__crew { display: none; }
+  .gcrd--tall .gcrd__foot { margin-top: 14px; padding-top: 12px; letter-spacing: 0.08em; font-size: clamp(9px, 0.7vw, 12px); }
+  .gcrd--tall .gcrd__who small { letter-spacing: 0.08em; }
+}
+
 /* desktop placement: the card bleeds off the right edge; the booking pill sits below the camera */
 @media (min-width: 1180px) and (min-aspect-ratio: 13/10) {
   .cam__side--r { inset: 0; width: auto; transform: none; }
@@ -291,3 +321,4 @@ html.intro-done .cam__spot::after { content: ""; position: absolute; inset: -10p
 /* once the monitor fills the view, nothing behind it needs painting; while it moves, the hotspots aren't needed */
 .cam.is-zoomed :is(.cam__bg, .cam__bgword, .cam__img, .cam__shadow, .cam__hot, .cam__ui-page, .cam__sides) { visibility: hidden; }
 .cam.is-moving .cam__hot { visibility: hidden; }
+.gcrd--f .gcrd__head { text-shadow: 0 1px 8px rgba(120, 30, 10, 0.7); }

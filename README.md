@@ -32,7 +32,7 @@ Other pages: **Guild**, **Instagram**, **Capabilities**, **About**, **Contact**,
 
 **Frames that stay.** It sits on the left of the hero (with a short blurb and tags), in the footer panel, the page
 title and meta description. Change it in `index.html` (`.cam__motto`) and the `SITE.projectBy` label in `js/chrome.js`.
-The right of the hero is a full-bleed neon **Guild card** (three looks — `LF.GUILD_CARD` in `js/guild.js`, or preview with `?card=a|b|c`) (members from `js/guild.js`) linking to the Guild page; on phones it becomes a one-row pill under the camera. Click the monitor to cut to the next reel.
+The right of the hero is a full-bleed neon **Guild card** (smoked liquid glass by default; other looks via `LF.GUILD_CARD` in `js/guild.js`, or preview with `?card=a`–`f`, `?size=compact|slim`) (members from `js/guild.js`) linking to the Guild page; on phones it becomes a one-row pill under the camera. Click the monitor to cut to the next reel.
 
 ## Playable camera
 
