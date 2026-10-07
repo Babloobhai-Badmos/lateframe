@@ -253,7 +253,7 @@
   if (playRow) {
     const arrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>';
     const set = (hidden) => `<div class="play__set" aria-hidden="${hidden}">${PLAY.map(([cap, href, h], i) =>
-      `<a class="pcard" href="${href}" draggable="false" ${hidden ? 'tabindex="-1"' : ""} aria-label="${cap}"><div class="pcard__frame" style="--h:clamp(180px, min(${h}svh, ${(h * 0.625).toFixed(2)}vw), ${h * 14}px);--y:${YS[i % 8]}px;--r:${RS[i % 8]}deg"><div class="pcard__in"><div class="ph" style="--h:${(i * 47 + 250) % 360}"></div><div class="pcard__cap"><span>${cap}</span>${arrow}</div></div></div></a>`).join("")}</div>`;
+      `<a class="pcard" href="${href}" draggable="false" ${hidden ? 'tabindex="-1"' : ""} aria-label="${cap}"><div class="pcard__frame" style="--h:clamp(180px, min(${h}svh, ${(h * 0.625).toFixed(2)}vw), ${h * 14}px);--y:${YS[i % 8]}px;--r:${RS[i % 8]}deg"><div class="pcard__in"><div class="ph" style="--h:${(i * 47 + 250) % 360}" data-photo="play-${i + 1}" data-w="600"></div><div class="pcard__cap"><span>${cap}</span>${arrow}</div></div></div></a>`).join("")}</div>`;
     playRow.innerHTML = set(false) + set(true);
   }
   const playRail = $("[data-play]");
