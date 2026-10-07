@@ -21,9 +21,9 @@
 
   /* ---- the Instagram page + the home-page strip: one list, 8 tiles ---- */
   LF.FEED = [
-    { type: "Reel", link: "", img: "feed-1" },     // link: the reel's Instagram URL, e.g. https://www.instagram.com/reel/AbC123/
-    { type: "Reel", link: "", img: "feed-2" },     // img : Cloudinary Public ID of its thumbnail
-    { type: "Reel", link: "", img: "feed-3" },     // clip: instead of img, a Cloudinary VIDEO Public ID (e.g. "reel-02")
+    { type: "Reel", link: "https://www.instagram.com/reel/DeBhNUKRQ1a/?stkn=MWdqN2dsamlqcWowNQ==", clip: "reel-01" },     // link: the reel's Instagram URL, e.g. https://www.instagram.com/reel/AbC123/
+    { type: "Reel", link: "https://www.instagram.com/reel/Db-tF7eBTr5/?stkn=b2p2bWFpYmJ6MWN5", clip: "reel-02" },     // clip: the Cloudinary VIDEO Public ID (e.g. "reel-02")
+    { type: "Reel", link: "https://www.instagram.com/reel/Dd-J854zabU/?stkn=MXhjbHk4cWlzdHo1eA==", clip: "reel-03" },     // clip: instead of img, a Cloudinary VIDEO Public ID (e.g. "reel-03")
     { type: "Post", link: "", img: "feed-4" },     // type: "Reel" (9:16) or "Post" (4:5)
     { type: "Reel", link: "", img: "feed-5" },
     { type: "Reel", link: "", img: "feed-6" },
