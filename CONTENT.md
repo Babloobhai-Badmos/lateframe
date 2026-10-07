@@ -38,7 +38,7 @@ Instagram doesn't let other sites fetch a reel's thumbnail from its link, so eac
 ```
 - `link` — the reel or post URL (empty = your profile).
 - `img` — Public ID of an uploaded thumbnail (screenshot of the reel cover, or any image).
-- `clip` — instead of `img`, the Public ID of a video already on Cloudinary; a frame is cut from it automatically (so reels 1–5 need no extra upload).
+- `clip` — instead of `img`, the Public ID of a video already on Cloudinary (e.g. `"reel-02"`). The tile shows a frame, then **plays the 3-second loop** on the Instagram page. It's the same file the camera monitor downloads, so there's no extra download.
 - `type` — `"Reel"` (tall) or `"Post"` (4:5).
 
 ## Reels — 3-second clips from Cloudinary, downloaded once
