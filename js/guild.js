@@ -27,7 +27,7 @@
       bio: "Devansh founded lateframe to turn raw footage into edits people actually finish watching. He leads every project — pacing, color and sound — from the first cut to the final export.",
       tags: ["Reels", "Color", "Motion", "Sound"],
       photo: "assets/guild/devansh.webp",
-      links: { instagram: "https://instagram.com/" },
+      links: { instagram: "https://instagram.com/devansh_sharma275" },
       lead: true,
     },
     // { name: "Full Name", role: "Colorist", bio: "…", tags: ["Color"], photo: "assets/guild/name.jpg", links: {} },

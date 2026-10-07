@@ -13,10 +13,10 @@
     owner: "Devansh Sharma",   // named in the Privacy + Terms pages and on the Guild page
     /* Contact page — fill these four in (leave one empty "" to hide its card) */
     contact: {
-      whatsapp: "910000000000",                    // ← WhatsApp number: country code + number, digits only (91 = India)
+      whatsapp: "919368974848",                    // ← WhatsApp number: country code + number, digits only (91 = India)
       whatsappText: "Hi lateframe — I'd like to talk about a project.",
       email: "hello@example.com",                  // ← your email
-      phone: "+91 00000 00000",                    // ← phone number, as you want it shown
+      phone: "+91 9368974848",                    // ← phone number, as you want it shown
       form: "https://forms.gle/your-form-id",      // ← your Google Form link
       embedForm: false,                            // true = also show the form inline on the contact page
     },
@@ -30,7 +30,7 @@
       { label: "Contact", href: "contact.html" },
     ],
     socials: [
-      { id: "instagram", label: "Instagram", url: "https://instagram.com/" }, // ← set to your profile URL
+      { id: "instagram", label: "Instagram", url: "https://instagram.com/lateframes.studio" }, // ← set to your profile URL
       { id: "youtube", label: "YouTube", url: "https://youtube.com/" },
       { id: "x", label: "X", url: "https://x.com/" },
     ],
