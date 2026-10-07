@@ -33,6 +33,10 @@
     { type: "Post", link: "", img: "feed-8" },
   ];
 
+  /* If Cloudinary gave an upload a different Public ID than its name (e.g. "frame-1_x7k2q" — it adds a
+     random suffix when "unique filename" is on), map it here instead of renaming:  { "frame-1": "frame-1_x7k2q" } */
+  LF.PHOTO_IDS = LF.PHOTO_IDS || {};
+
   const cloud = () => (LF.CLOUDINARY && LF.CLOUDINARY.cloud) || "";
   const live = () => cloud() && cloud() !== "your-cloud-name";
   const social = (id) => ((window.SITE && SITE.socials.find((s) => s.id === id)) || {}).url || "https://instagram.com/";
@@ -43,11 +47,14 @@
     let img = slot, clip = null;
     const m = slot.match(/^feed-(\d+)$/);
     if (m && LF.FEED[m[1] - 1]) { const f = LF.FEED[m[1] - 1]; img = f.img || slot; clip = f.clip; }
+    img = LF.PHOTO_IDS[img] || img;
     const base = `https://res.cloudinary.com/${cloud()}`;
     return clip
       ? `${base}/video/upload/so_1,w_${w},c_limit,q_auto/${clip}.jpg`
       : `${base}/image/upload/f_auto,q_auto,w_${w},c_limit/${img}`;
   }
+  /* the same picture with no transformation — works even if "Strict transformations" is on */
+  const plainUrl = (url) => url.replace(/\/upload\/[^/]*,[^/]*\//, "/upload/");
 
   /* clip tiles play only while they're on screen */
   const vio = "IntersectionObserver" in window
@@ -77,10 +84,43 @@
     if (!url) return;
     const m = el.dataset.photo.match(/^feed-(\d+)$/), f = m && LF.FEED[m[1] - 1];
     if (playsClips && f && f.clip) attachClip(el, f.clip);
+    const show = (u) => { el.style.backgroundImage = `url("${u}")`; el.setAttribute("data-src", u); el.classList.add("is-photo"); };
     const im = new Image();
     im.decoding = "async";
-    im.onload = () => { el.style.backgroundImage = `url("${url}")`; el.setAttribute("data-src", url); el.classList.add("is-photo"); };
+    im.onload = () => show(im.src);
+    im.onerror = () => {
+      const plain = plainUrl(url);
+      if (plain === url || el.classList.contains("is-photo")) return report(el.dataset.photo, url);
+      const im2 = new Image();                       // retry without resizing
+      im2.onload = () => show(plain);
+      im2.onerror = () => report(el.dataset.photo, url);
+      im2.src = plain;
+    };
     im.src = url;
+  }
+
+  /* ---- ?photos in the address bar → a panel that says what Cloudinary answered for each picture ---- */
+  const debug = /[?&]photos\b/.test(location.search);
+  const seen = new Set();
+  let panel = null;
+  function report(slot, url) {
+    if (!debug || seen.has(slot)) return;
+    seen.add(slot);
+    if (!panel) {
+      panel = document.createElement("div");
+      panel.style.cssText = "position:fixed;left:12px;bottom:12px;z-index:99999;max-width:min(560px,92vw);max-height:60vh;overflow:auto;background:#111;color:#eee;font:12px/1.5 ui-monospace,monospace;padding:12px 14px;border-radius:10px;box-shadow:0 8px 30px #000a";
+      panel.innerHTML = "<b>Photos that did not load</b> <small>(Cloudinary's answer)</small>";
+      document.body.appendChild(panel);
+    }
+    const row = document.createElement("div");
+    row.style.cssText = "margin-top:8px;word-break:break-all";
+    row.textContent = `✗ ${slot} — checking…`;
+    panel.appendChild(row);
+    fetch(url, { method: "HEAD", mode: "cors" }).then((r) => {
+      const why = r.headers.get("x-cld-error") || "";
+      row.textContent = `✗ ${slot} — HTTP ${r.status}${why ? " · " + why : ""}\n${url}`;
+      row.style.whiteSpace = "pre-wrap";
+    }).catch(() => { row.textContent = `✗ ${slot} — blocked or offline\n${url}`; });
   }
 
   const io = "IntersectionObserver" in window
