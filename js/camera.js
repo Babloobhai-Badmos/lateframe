@@ -53,9 +53,9 @@
   /* clips: each is fetched once (Cloudinary → Cache Storage → blob URL) and loops from memory */
   if (window.LF.clip && LF.clipUrl) {
     const urls = EDITS.map((e) => LF.clipUrl(e));
-    const first = urls.findIndex(Boolean);
-    if (first >= 0 && LF.waitFor) LF.waitFor(LF.clip(urls[first]));        // the intro waits for the first clip only
-    urls.forEach((u, i) => u && LF.clip(u).then((src) => {
+    const hold = (LF.CLOUDINARY && LF.CLOUDINARY.preload) || 3;                // how many clips the intro waits for
+    if (LF.waitFor) urls.filter(Boolean).slice(0, hold).forEach((u) => LF.waitFor(LF.clip(u)));   // the rest load right after
+    const attach = (i) => LF.clip(urls[i]).then((src) => {
       if (!src) return;
       const v = document.createElement("video");
       v.muted = true; v.loop = true; v.playsInline = true; v.preload = "auto";
@@ -65,8 +65,13 @@
       reels[i].querySelector(".cam__art--main").appendChild(v);
       vids[i] = v;
       if (reels[i].classList.contains("is-on") && visible) v.play().catch(() => {});
-    }));
-    Promise.all(urls.filter(Boolean).map((u) => LF.clip(u))).then(() => LF.clipsPrune && LF.clipsPrune(urls.filter(Boolean)));
+    });
+    const ids = urls.map((u, i) => (u ? i : -1)).filter((i) => i >= 0);
+    const firstWave = ids.slice(0, hold), laterWave = ids.slice(hold);
+    // reels 1–3 download first, side by side; 4 and 5 only start once those have arrived
+    Promise.all(firstWave.map(attach))
+      .then(() => Promise.all(laterWave.map(attach)))
+      .then(() => LF.clipsPrune && LF.clipsPrune(urls.filter(Boolean)));
   }
 
   const el = {
