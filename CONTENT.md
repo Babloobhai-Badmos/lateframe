@@ -33,7 +33,7 @@ Never commit `.mp4` files. Each reel in `js/edits.js` has:
 | Field | What | Weight |
 |---|---|---|
 | `clip` | The Cloudinary **public ID** of the reel (`reel-01` … `reel-05`) | 0 in the repo |
-| `image` | Poster still, 540×960 WebP (`assets/reels/01.webp`) — shown until the clip is ready, and for visitors on Data Saver / reduced-motion | ~25 KB each |
+| `image` | *Optional.* Your own cover (`assets/reels/01.webp`, 540×960 WebP). Left out, a frame 1 s into the clip is cut by Cloudinary automatically — shown until the clip is ready, and for visitors on Data Saver / reduced-motion | ~20 KB each |
 | `link` | The reel's Instagram / YouTube Shorts / Vimeo URL — the pop-up embeds it when you press play | 0 |
 
 **One-time Cloudinary setup**
@@ -44,6 +44,6 @@ Never commit `.mp4` files. Each reel in `js/edits.js` has:
 
 **What the visitor's device does**
 - Each clip is downloaded **once**, saved in the browser's Cache Storage, and played from a local `blob:` URL — so every loop, and every later visit, costs **zero** network and zero Cloudinary bandwidth.
-- The intro waits only for the first clip (about 0.3–0.6 MB); the other four load right after.
+- The opening animation waits for the first **three** clips (`preload: 3` in `js/edits.js`), downloaded side by side; reels 4 and 5 load right after.
 - Expected weight: about 0.3–0.7 MB per clip, so about 2–3 MB **once per device**. On Cloudinary's free plan (25 credits ≈ 25 GB of video bandwidth a month) that is roughly 8,000+ new devices a month.
 - Swapping a clip: change its public ID or transformation → the URL changes → the device fetches the new one and drops the old.

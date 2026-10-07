@@ -6,8 +6,10 @@
 
      title / tag : shown on screen
      ar          : "h" (16:9) or "v" (9:16 — pillarboxed on the monitor)
-     image       : poster still, e.g. assets/reels/01.webp (540×960, ~25 KB)
-     link        : the reel's Instagram / YouTube / Vimeo URL — the modal embeds it
+     image       : (optional) your own cover still — a file in assets/reels/ (540×960 WebP, ~25 KB)
+                   or any URL. Left out, a poster frame is cut from the clip by Cloudinary.
+     link        : the reel's Instagram / YouTube / Vimeo URL, e.g.
+                   "https://www.instagram.com/reel/AbC123xyz/" — the pop-up embeds it
                    when you press play, so NO video file has to be hosted on the site
      clip        : Cloudinary public ID of the 3-second loop that autoplays on the camera
                    monitor (see LF.CLOUDINARY below). Downloaded once, then kept on the device.
@@ -26,6 +28,7 @@
      does it from your original upload, so upload the full-quality file. */
   window.LF.CLOUDINARY = {
     cloud: "mdoueimq",
+    preload: 3,   // the opening animation waits for this many clips (reels 1, 2, 3) before it lets the page in
     horizontal: "f_mp4,vc_h264,q_auto:eco,so_0,du_3,ac_none,w_1280,h_720,c_fill",
     vertical: "f_mp4,vc_h264,q_auto:eco,so_0,du_3,ac_none,w_720,h_1280,c_fill",
   };
@@ -37,4 +40,14 @@
     { title: "Golden Hour", clip: "reel-04", tag: "Color grade", ar: "v", hue: 40, dy: 8, dur: 6.4, delay: -3.8 },
     { title: "Hyperdrive", clip: "reel-05", tag: "Speed ramps", ar: "h", hue: 265, dy: -5, dur: 7.5, delay: -5 },
   ];
+
+  /* posters: unless a reel has its own `image`, use a frame cut from its Cloudinary clip (1 s in) */
+  const C = window.LF.CLOUDINARY;
+  if (C.cloud && C.cloud !== "your-cloud-name") {
+    window.LF.EDITS.forEach((r) => {
+      if (r.image || !r.clip) return;
+      const size = r.ar === "v" ? "w_540,h_960" : "w_960,h_540";
+      r.image = `https://res.cloudinary.com/${C.cloud}/video/upload/so_${(r.start || 0) + 1},${size},c_fill,q_auto/${r.clip}.jpg`;
+    });
+  }
 })();
