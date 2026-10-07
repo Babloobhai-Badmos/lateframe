@@ -14,17 +14,32 @@ Everything below is a placeholder today. Nothing needs a code change except the 
 | `contact.embedForm` | `true` to also show the form inline | Contact page |
 | `socials[].url` | Instagram, YouTube and X profile URLs | Menu, footer |
 
-## Photos — drop files in the listed folder, then reference them
+## Photos — all hosted on Cloudinary, matched by name
 
-| Image | File / field | Size | Where it appears |
+Upload each image to Cloudinary (root folder) and set its **Public ID** to the name below. Nothing else to edit — it appears on the site by itself, loads lazily, and Cloudinary resizes and compresses it. Until a name exists, that spot keeps its placeholder.
+
+| Public ID | Where | Shown at | Upload size |
 |---|---|---|---|
-| Devansh portrait | `assets/guild/devansh.jpg` (already referenced in `js/guild.js`) | 1200×1500 (4:5), face in the upper half | Guild page (large), home Guild card (small circle) |
-| Other members | `assets/guild/<name>.jpg` + a `photo:` path in `LF.GUILD` | 1200×1500 | Guild page grid, home card |
-| Reel poster stills | `image:` on each reel in `js/edits.js` | 1080×1920 (9:16) or 1920×1080 | Floating cards in "Selected Edits", reel modal, monitor before the video loads |
-| Instagram grid tiles | `data-src="assets/feed/01.jpg"` on each `.ph` in `instagram.html` and the "Straight from the feed" tiles in `index.html` | 1080×1350 | Instagram page, home "Straight from the feed" |
-| Frame stills | `data-src` on the three `.polaroid .ph` in `index.html` | 1200×1500 | The "Every cut has a reason" statement |
-| Capability visuals | `data-src` on the `.pslide__pol .ph` in `index.html` | 1000×1250 | Capabilities wipe on the home page and Capabilities page |
-| Social preview | `assets/brand/logo-lf.jpg` | 1200×630 | Link previews (WhatsApp / Instagram / X) |
+| `frame-1` … `frame-3` | The 3 polaroids in "Every cut has a reason" (portrait stills from your edits) | ~300 px wide | 1000×1250 |
+| `feed-1` … `feed-8` | Instagram page tiles; `feed-1`…`feed-5` also form the home "Straight from the feed" strip | ~300–500 px wide | 1080×1920 for reels, 1080×1350 for posts |
+| `cap-1` … `cap-12` | Capabilities section, 2 per service in this order: Reels (hook, loop), Color (before, after), Motion (type, overlay), Sound (beat, waveform), Pacing (raw, cut), Brand (9:16, 16:9) | ~350 px wide | 1000×1250 |
+| `play-1` … `play-16` | The sliding photo cards in "Every frame is a decision" | ~300×400 px | 900×1200 |
+| `reel-01` … `reel-05` (**video**) | The 3-second loops on the camera monitor (see Reels) | | original |
+
+Other pictures that stay in the repo: Devansh's portrait (`assets/guild/devansh.webp`) and the social preview image (`assets/brand/logo-lf.jpg`).
+
+### Instagram tiles: link + thumbnail
+Instagram doesn't let other sites fetch a reel's thumbnail from its link, so each tile needs its own picture. Edit the list `LF.FEED` at the top of `js/photos.js`:
+
+```js
+{ type: "Reel", link: "https://www.instagram.com/reel/AbC123xyz/", img: "feed-1" },
+{ type: "Reel", link: "https://www.instagram.com/reel/DeF456uvw/", clip: "reel-02" },  // frame cut from a Cloudinary video
+{ type: "Post", link: "https://www.instagram.com/p/GhI789rst/",    img: "feed-4" },
+```
+- `link` — the reel or post URL (empty = your profile).
+- `img` — Public ID of an uploaded thumbnail (screenshot of the reel cover, or any image).
+- `clip` — instead of `img`, the Public ID of a video already on Cloudinary; a frame is cut from it automatically (so reels 1–5 need no extra upload).
+- `type` — `"Reel"` (tall) or `"Post"` (4:5).
 
 ## Reels — 3-second clips from Cloudinary, downloaded once
 
