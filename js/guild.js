@@ -26,7 +26,7 @@
       role: "Founder · Lead editor",
       bio: "Devansh founded lateframe to turn raw footage into edits people actually finish watching. He leads every project — pacing, color and sound — from the first cut to the final export.",
       tags: ["Reels", "Color", "Motion", "Sound"],
-      photo: "assets/guild/devansh.jpg",
+      photo: "assets/guild/devansh.webp",
       links: { instagram: "https://instagram.com/" },
       lead: true,
     },
