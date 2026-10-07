@@ -21,7 +21,7 @@
     if (e.video) return e.video;                         // a full URL always wins
     const c = LF.CLOUDINARY || {};
     if (!e.clip || !c.cloud || c.cloud === "your-cloud-name") return null;
-    const t = e.ar === "v" ? c.vertical : c.horizontal;
+    const t = (e.ar === "v" ? c.vertical : c.horizontal).replace("so_0", "so_" + (e.start || 0));   // e.start = which second the 3 s begins at
     return `https://res.cloudinary.com/${c.cloud}/video/upload/${t}/${e.clip}.mp4`;
   };
 

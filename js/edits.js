@@ -11,6 +11,7 @@
                    when you press play, so NO video file has to be hosted on the site
      clip        : Cloudinary public ID of the 3-second loop that autoplays on the camera
                    monitor (see LF.CLOUDINARY below). Downloaded once, then kept on the device.
+     start       : (optional) second of the original where the 3-second clip begins (default 0)
      video       : (optional) a full mp4 URL instead of `clip` — must be hosted off-site;
                    never commit mp4s to this repo
      hue         : colour of the placeholder art (0–360)
