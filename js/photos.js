@@ -23,14 +23,14 @@
 
   /* ---- the Instagram page + the home-page strip: one list, 8 tiles ---- */
   LF.FEED = [
+    { type: "Reel", link: "https://www.instagram.com/reel/DbYIIF-A1HH/?stkn=MXJmdGVhZmNsbml1cQ==", clip: "reel-06" },     // type: "Reel" (9:16) or "Post" (4:5)
+    { type: "Reel", link: "https://www.instagram.com/reel/DXO-CZGgJzR/?stkn=bWNobXJwNGpkazVn", clip: "reel-07" },
+    { type: "Reel", link: "https://www.instagram.com/reel/DXMaplPEkFz/?stkn=MTRjdWR6d3VtZDI4NA==", clip: "reel-08" },
     { type: "Reel", link: "https://www.instagram.com/reel/DeBhNUKRQ1a/?stkn=MWdqN2dsamlqcWowNQ==", clip: "reel-01" },     // link: the reel's Instagram URL, e.g. https://www.instagram.com/reel/AbC123/
     { type: "Reel", link: "https://www.instagram.com/reel/Db-tF7eBTr5/?stkn=b2p2bWFpYmJ6MWN5", clip: "reel-02" },     // clip: the Cloudinary VIDEO Public ID (e.g. "reel-02")
     { type: "Reel", link: "https://www.instagram.com/reel/Dd-J854zabU/?stkn=MXhjbHk4cWlzdHo1eA==", clip: "reel-03" },     // clip: instead of img, a Cloudinary VIDEO Public ID (e.g. "reel-03")
-    { type: "Post", link: "", img: "feed-4" },     // type: "Reel" (9:16) or "Post" (4:5)
-    { type: "Reel", link: "", img: "feed-5" },
-    { type: "Reel", link: "", img: "feed-6" },
-    { type: "Reel", link: "", img: "feed-7" },
-    { type: "Post", link: "", img: "feed-8" },
+    { type: "Reel", link: "https://www.instagram.com/reel/DcK9_CWx6ec/?stkn=YmpwZ2FocW5sdGJ4", clip: "reel-04" },
+    { type: "Reel", link: "https://www.instagram.com/reel/DcdNChzRpWI/?stkn=empvcG42Y2Q4dmxr", clip: "reel-09" },
   ];
 
   /* If Cloudinary gave an upload a different Public ID than its name (e.g. "frame-1_x7k2q" — it adds a
