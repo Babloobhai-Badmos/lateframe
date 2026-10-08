@@ -38,7 +38,7 @@
     { title: "Beat Drop", clip: "reel-02", tag: "Beat-synced cuts", link: "https://www.instagram.com/reel/Db-tF7eBTr5/?stkn=b2p2bWFpYmJ6MWN5", ar: "v", hue: 200, dy: 12, dur: 7.5, delay: -1.3 },
     { title: "Whip & Warp", clip: "reel-03", tag: "Transitions", link: "https://www.instagram.com/reel/Dd-J854zabU/?stkn=MXhjbHk4cWlzdHo1eA==", ar: "h", hue: 330, dy: -15, dur: 8.6, delay: -2.5 },
     { title: "Golden Hour", clip: "reel-04", tag: "Color grade", link: "https://www.instagram.com/reel/DcK9_CWx6ec/?stkn=YmpwZ2FocW5sdGJ4", ar: "v", hue: 40, dy: 8, dur: 6.4, delay: -3.8 },
-    { title: "Hyperdrive", clip: "reel-05", tag: "Speed ramps", link: "https://www.instagram.com/reel/DWXCmrnkgU4/?stkn=MXgwOXA5cGl6cWZhNw==", ar: "h", hue: 265, dy: -5, dur: 7.5, delay: -5 },
+    { title: "Hyperdrive", clip: "reel-10", tag: "Speed ramps", link: "https://www.instagram.com/reel/DeOIYgMTKOe/?exln=MTduYThodG41aWIwaw==", ar: "h", hue: 265, dy: -5, dur: 7.5, delay: -5 },
   ];
 
   /* posters: unless a reel has its own `image`, use a frame cut from its Cloudinary clip (1 s in) */
